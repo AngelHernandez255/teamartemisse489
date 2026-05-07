@@ -38,7 +38,7 @@ def plot_training_history(
 
 
 def plot_confusion_matrix(
-    cm: Any, labels: list[str] | None = None, output_path: str | None = None
+    cm: any, labels: list[str] | None = None, output_path: str | None = None
 ) -> None:
     """Plot a confusion matrix.
 
