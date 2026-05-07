@@ -22,7 +22,7 @@ def train(
     """
     logger.info(
         "Training with data=%s epochs=%d bs=%d lr=%g", data_path, epochs, batch_size, lr
-               )
+    )
     model_dir.mkdir(parents=True, exist_ok=True)
 
 
@@ -43,7 +43,7 @@ def main() -> None:
 
     train(
         args.data_path, args.model_dir, args.epochs, args.batch_size, args.learning_rate
-        )
+    )
     logger.info("Training complete")
 
 
