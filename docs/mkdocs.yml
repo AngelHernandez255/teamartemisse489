@@ -1,0 +1,21 @@
+site_name: TeamArtemisSE489
+site_description: "An ML movie recomender"
+site_author: "TeamArtemisIV"
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+
+nav:
+  - Home: index.md
+  - Getting Started: getting_started.md
+  - API Reference: api.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - toc
