@@ -12,7 +12,8 @@ from teamartemisse489.utils.seed import set_seed
 logger = get_logger(__name__)
 
 
-def train(data_path: Path, model_dir: Path, epochs: int, batch_size: int, lr: float) -> None:
+def train(data_path: Path, model_dir: Path,
+          epochs: int, batch_size: int, lr: float) -> None:
     """Train the model and persist the fitted artifact to ``model_dir``.
 
     Fill in the training loop / estimator fit for your problem and
@@ -38,7 +39,7 @@ def main() -> None:
     setup_logging()
     set_seed(args.seed)
 
-    train(args.data_path, args.model_dir, args.epochs, 
+    train(args.data_path, args.model_dir, args.epochs,
           args.batch_size, args.learning_rate)
     logger.info("Training complete")
 
