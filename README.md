@@ -5,7 +5,12 @@ An ML movie recomender
 ## Team Information
 
 - **Project Lead:** TeamArtemisIV (ahern255@depaul.edu)
-- **Team Members:** *To be filled in*
+- **Team Members:** 
+
+### Angel Hernandez (AHERN255@depaul.edu)
+### Anjan Kumar Basavaraj Gurudatt (ABASAVAR@depaul.edu)
+### Sakshi Gorkhali (SGORKHAL@depaul.edu)
+### Joshua Nevin Chandrasekar (JCHANDR2@depaul.edu)
 
 ## Project Overview
 
