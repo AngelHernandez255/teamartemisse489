@@ -5,16 +5,37 @@ An ML movie recomender
 ## Team Information
 
 - **Project Lead:** TeamArtemisIV (ahern255@depaul.edu)
-- **Team Members:** *To be filled in*
+- **Team Members:** 
+
+        1.Anjan Kumar B G
+
+        2.Angel Hernandez
+
+        3.Sakshi Gorkhali
+
+        4.Joshua Nevin Chandrasekar
 
 ## Project Overview
 
 TeamArtemisSE489 is a machine learning project that implements An ML movie recomender.
 
+we have used a dataset from kaggle link: https://www.kaggle.com/datasets/bwandowando/rotten-tomatoes-9800-movie-critic-and-user-reviews
+the data set consists of 56 Million user reviews of 10500 Movies.
+
+For this project we are using only 1 Million user reviews to recommend movies to the users.
+
 **Key Objectives:**
 - [ ] Objective 1
+
+Build a scalable movie recommendation system using collaborative filtering techniques to generate personalized movie suggestions based on user ratings and interaction patterns.
+
 - [ ] Objective 2
+
+Develop a reproducible MLOps pipeline that automates data preprocessing, feature engineering, model training, evaluation, and model persistence using industry-standard engineering practices.
+
 - [ ] Objective 3
+
+Establish a maintainable and collaborative machine learning workflow with version control, code quality checks, documentation, and modular project structure to support future deployment and continuous improvement.
 
 ## Architecture Diagram
 
