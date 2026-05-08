@@ -7,13 +7,10 @@ An ML movie recomender
 - **Project Lead:** TeamArtemisIV (ahern255@depaul.edu)
 - **Team Members:** 
 
-        1.Anjan Kumar B G
-
-        2.Angel Hernandez
-
-        3.Sakshi Gorkhali
-
-        4.Joshua Nevin Chandrasekar
+### Angel Hernandez (AHERN255@depaul.edu)
+### Anjan Kumar Basavaraj Gurudatt (ABASAVAR@depaul.edu)
+### Sakshi Gorkhali (SGORKHAL@depaul.edu)
+### Joshua Nevin Chandrasekar (JCHANDR2@depaul.edu)
 
 ## Project Overview
 
@@ -38,7 +35,7 @@ Develop a reproducible MLOps pipeline that automates data preprocessing, feature
 Establish a maintainable and collaborative machine learning workflow with version control, code quality checks, documentation, and modular project structure to support future deployment and continuous improvement.
 
 ## Architecture Diagram
-
+![Project Architecture](achitecturediagramMlops.png)
 ```
 [Placeholder for architecture diagram]
 

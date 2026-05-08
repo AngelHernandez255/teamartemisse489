@@ -4,7 +4,7 @@ Visualization utilities for TeamArtemisSE489.
 This module contains functions for creating plots, charts, and other visualizations.
 """
 
-from typing import Any, Optional
+from typing import Any
 
 import matplotlib.pyplot as plt
 

@@ -30,11 +30,14 @@ dev = [
     "ruff>=0.6.0",
     "mypy>=1.11",
     "pre-commit>=3.8",
+    "pandas-stubs>=2.2.0",
 ]
 
 [tool.ruff]
+fix = true
 line-length = 88
 target-version = "py311"
+exclude = ["notebooks/"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "B", "UP"]
@@ -43,6 +46,10 @@ select = ["E", "F", "I", "N", "W", "B", "UP"]
 python_version = "3.11"
 warn_return_any = true
 disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = ["joblib", "sklearn.*", "tensorflow.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
