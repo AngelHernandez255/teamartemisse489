@@ -16,7 +16,7 @@ data:
 	python -m teamartemisse489.data.make_dataset
 
 train:
-	python -m teamartemisse489.train_model
+	python -m teamartemisse489.models.train
 
 predict:
 	python -m teamartemisse489.predict_model
