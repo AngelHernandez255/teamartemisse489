@@ -37,6 +37,7 @@ dev = [
 fix = true
 line-length = 88
 target-version = "py311"
+exclude = ["notebooks/"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "B", "UP"]
