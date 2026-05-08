@@ -4,7 +4,7 @@ Visualization utilities for TeamArtemisSE489.
 This module contains functions for creating plots, charts, and other visualizations.
 """
 
-# from typing import Any, Optional
+from typing import Any
 
 import matplotlib.pyplot as plt
 
@@ -38,7 +38,7 @@ def plot_training_history(
 
 
 def plot_confusion_matrix(
-    cm: any, labels: list[str] | None = None, output_path: str | None = None
+    cm: Any, labels: list[str] | None = None, output_path: str | None = None
 ) -> None:
     """Plot a confusion matrix.
 
