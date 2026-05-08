@@ -34,6 +34,14 @@ Develop a reproducible MLOps pipeline that automates data preprocessing, feature
 
 Establish a maintainable and collaborative machine learning workflow with version control, code quality checks, documentation, and modular project structure to support future deployment and continuous improvement.
 
+## Project Status
+
+This repository currently contains the foundational implementation of the TeamArtemisIV Movie Recommendation MLOps project developed as part of Phase 1. The current phase focuses on establishing the baseline machine learning pipeline, project structure, data preprocessing workflow, model training and collaborative development practices.
+
+Some  MLOps components are not yet implemented in their complete production-scale form.
+
+All remaining project requirements and advanced MLOps capabilities will be fully implemented and refined by Phase 2 of the project.
+
 ## Architecture Diagram
 ![Project Architecture](achitecturediagramMlops.png)
 ```
