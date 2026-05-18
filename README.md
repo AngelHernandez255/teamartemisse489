@@ -3,12 +3,12 @@
 ## Team Information
 
 ### TeamArtemisSE489
-### **Team Members:** 
 - Anjan Kumar Basavaraj Gurudatt (ABASAVAR@depaul.edu)
 - Joshua Nevin Chandrasekar (JCHANDR2@depaul.edu)
 - Sakshi Gorkhali (SGORKHAL@depaul.edu)
 - Angel Hernandez (AHERN255@depaul.edu)
-### SE 456
+  
+- SE 456
 
 ## Project Overview
 
@@ -26,14 +26,8 @@ Develop a reproducible MLOps pipeline that automates data preprocessing, feature
 - [ ] Objective 3
 Establish a maintainable and collaborative machine learning workflow with version control, code quality checks, documentation, and modular project structure to support future deployment and continuous improvement.
 
-## Architecture Diagram - TODO: REPACEME!
+## Architecture Diagram
 ![Project Architecture](achitecturediagramMlops.png)
-```
-[Placeholder for architecture diagram]
-
-Insert your system architecture diagram here, showing data flow, components,
-and interactions between different parts of the system.
-```
 
 ## Phase Deliverables
 
