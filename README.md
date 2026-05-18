@@ -1,32 +1,29 @@
 # TeamArtemisSE489
 
-An ML movie recomender
-
 ## Team Information
 
 - **Project Lead:** TeamArtemisIV (ahern255@depaul.edu)
 - **Team Members:** 
 
-### Angel Hernandez (AHERN255@depaul.edu)
-### Anjan Kumar Basavaraj Gurudatt (ABASAVAR@depaul.edu)
-### Sakshi Gorkhali (SGORKHAL@depaul.edu)
-### Joshua Nevin Chandrasekar (JCHANDR2@depaul.edu)
+Anjan Kumar Basavaraj Gurudatt (ABASAVAR@depaul.edu)
+Joshua Nevin Chandrasekar (JCHANDR2@depaul.edu)
+Sakshi Gorkhali (SGORKHAL@depaul.edu)
+Angel Hernandez (AHERN255@depaul.edu)
 
 ## Project Overview
 
-TeamArtemisSE489 is a machine learning project that implements An ML movie recomender.
+We are TeamArtemisSE489, a team for the class Global Software Development, and we are working on a machine learning project that uses machine learning to recommend movies. 
+We have used a dataset from kaggle link: https://www.kaggle.com/datasets/bwandowando/rotten-tomatoes-9800-movie-critic-and-user-reviews
+The data set consists of 56 million user reviews of 10500 Movies. The project will use this dataset to provide recommendations to users on what movie to see next. 
 
-we have used a dataset from kaggle link: https://www.kaggle.com/datasets/bwandowando/rotten-tomatoes-9800-movie-critic-and-user-reviews
-the data set consists of 56 Million user reviews of 10500 Movies.
-
-For this project we are using only 1 Million user reviews to recommend movies to the users.
+For this project, we are using only 1 million user reviews to recommend movies to users.
 
 **Key Objectives:**
-- [ ] Objective 1
+- [x] Objective 1
 
 Build a scalable movie recommendation system using collaborative filtering techniques to generate personalized movie suggestions based on user ratings and interaction patterns.
 
-- [ ] Objective 2
+- [x] Objective 2
 
 Develop a reproducible MLOps pipeline that automates data preprocessing, feature engineering, model training, evaluation, and model persistence using industry-standard engineering practices.
 
@@ -34,7 +31,7 @@ Develop a reproducible MLOps pipeline that automates data preprocessing, feature
 
 Establish a maintainable and collaborative machine learning workflow with version control, code quality checks, documentation, and modular project structure to support future deployment and continuous improvement.
 
-## Architecture Diagram
+## Architecture Diagram - TODO: REPACEME!
 ![Project Architecture](achitecturediagramMlops.png)
 ```
 [Placeholder for architecture diagram]
@@ -126,9 +123,6 @@ make help
 - **pre-commit** >= 3.8 - Git hooks framework
 
 ## Project Structure
-
-This template uses the modern **`src/` layout** — the importable package lives in `src/teamartemisse489/`, decoupled from the repository root. That forces `pip install -e .` before imports work, which catches packaging bugs early.
-
 ```
 teamartemisse489/                  # Repository root
 ├── src/
@@ -235,14 +229,7 @@ make docs
 
 ## Contribution Summary
 
-- [ ] Team members have been assigned
-- [ ] Development environment has been set up
-- [ ] Initial data exploration completed
-- [ ] Model baseline established
-- [ ] Evaluation metrics defined
-- [ ] Documentation updated
-- [ ] All tests passing
-- [ ] Code reviewed and merged
+- [x] Team members have been assigned
 
 ## References
 
