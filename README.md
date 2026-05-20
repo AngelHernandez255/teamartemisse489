@@ -64,6 +64,26 @@ docker compose up --build
 
 The Dockerfile was adapted from the Week 4 Docker exercise files with the package paths updated for this repository.
 
+#### Monitoring
+For Phase 2 monitoring, this project uses a lightweight `psutil` CSV monitor. It records CPU usage, RAM usage, process memory, process CPU, thread count, timestamps, and elapsed time while the training command runs. We chose this option because it works locally and inside Docker without requiring a separate dashboard service.
+
+Run the Surprise SVD trainer with monitoring:
+```bash
+python scripts/monitor_training.py --output logs/system_metrics.csv -- python models/train.py
+```
+
+Run the package training entrypoint with monitoring:
+```bash
+python scripts/monitor_training.py --output logs/system_metrics.csv -- python -m teamartemisse489.train_model
+```
+
+Run monitoring inside Docker while keeping logs and models on the host:
+```bash
+docker run -it --rm -v ${PWD}/models:/app/models -v ${PWD}/logs:/app/logs --entrypoint python teamartemisse489:latest scripts/monitor_training.py --output logs/system_metrics.csv -- python models/train.py
+```
+
+The monitoring output is written to `logs/system_metrics.csv`. The most useful columns are `system_cpu_percent` for machine load, `system_memory_percent` and `system_memory_used_mb` for RAM pressure, `process_memory_rss_mb` for the training process memory footprint, and `elapsed_seconds` for runtime. For model health, the recommender trainer prints RMSE at the end of the run; lower RMSE indicates better recommendation accuracy on the held-out test split.
+
 ### Phase 3: CI/CD & Deployment
 - See [PHASE3.md](PHASE3.md) for detailed checklist
 

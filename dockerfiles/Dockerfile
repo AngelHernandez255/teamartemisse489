@@ -27,6 +27,7 @@ RUN pip install --no-cache-dir uv==0.5.30 && \
     uv pip install -r requirements.txt --system
 
 COPY src/ src/
+COPY scripts/ scripts/
 COPY data/ data/
 COPY models/ models/
 COPY reports/ reports/
