@@ -12,7 +12,7 @@ authors = [
 requires-python = ">=3.11"
 license = {text = "MIT"}
 dependencies = [
-    "numpy>=1.26.0",
+    "numpy>=1.26.0,<2",
     "pandas>=2.2.0",
     "scikit-learn>=1.5.0",
     "joblib>=1.4.0",
@@ -21,6 +21,8 @@ dependencies = [
     "pyyaml>=6.0",
     "torch>=2.3.0",
     "mlflow>=2.16.0",
+    "rich>=15.0.0",
+    "wandb>=0.27.0",
 ]
 
 [project.optional-dependencies]
