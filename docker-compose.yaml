@@ -4,7 +4,7 @@ services:
   teamartemisse489:
     build:
       context: .
-      dockerfile: dockerfiles/Dockerfile
+      dockerfile: Dockerfile
     container_name: teamartemisse489_app
     volumes:
       - ./data:/app/data

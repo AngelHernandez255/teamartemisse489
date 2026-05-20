@@ -4,20 +4,24 @@ Store Docker configurations and container setup files here.
 
 ## Contents
 
-- **`Dockerfile`** — Main image definition for the application
-- **`docker-compose.yaml`** — Multi-container orchestration (in project root)
-- Docker-related configs and build scripts
+- **`Dockerfile`** - Alternate path for the main project image definition
+- **`train.dockerfile`** - Week 4 training exercise reference used as the pattern for the project Dockerfile
+- **`predict.dockerfile`** - Week 4 prediction exercise reference used as the pattern for project runtime conventions
+- **`docker-compose.yaml`** - Multi-container orchestration in the project root
 
 ## Usage
 
 ```bash
 # Build image
-docker build -f dockerfiles/Dockerfile -t teamartemisse489:latest .
+docker build -t teamartemisse489:latest .
 
-# Run container
-docker compose up
+# Run training with persistent model artifacts
+docker run -it --rm -v ${PWD}/models:/app/models teamartemisse489:latest
+
+# Optional Compose workflow
+docker compose up --build
 ```
 
 ## Phase
 
-Phase 2 deliverable — Docker infrastructure setup.
+Phase 2 deliverable - Docker infrastructure setup.

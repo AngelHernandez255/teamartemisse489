@@ -7,14 +7,14 @@ Phase 2 focuses on scaling and operationalizing TeamArtemisSE489 by implementing
 
 ## 1. Containerization
 
-- [ ] **Dockerfile Creation**: Build Dockerfile for model training and inference
-- [ ] **Base Image Selection**: Choose appropriate base image (python:3.x, nvidia/cuda, etc.)
-- [ ] **Environment Variables**: Define and document required environment variables
-- [ ] **Build Instructions**: Document how to build Docker image with examples
-- [ ] **Run Instructions**: Document how to run container with proper volume/network config
-- [ ] **Container Testing**: Test container locally to ensure consistency with host environment
-- [ ] **Docker Compose (Optional)**: Create docker-compose.yml for multi-service setups
-- [ ] **Environment Consistency**: Verify that containerized training produces identical results to local training
+- [x] **Dockerfile Creation**: Build Dockerfile for model training and inference
+- [x] **Base Image Selection**: Choose appropriate base image (python:3.x, nvidia/cuda, etc.)
+- [x] **Environment Variables**: Define and document required environment variables
+- [x] **Build Instructions**: Document how to build Docker image with examples
+- [x] **Run Instructions**: Document how to run container with proper volume/network config
+- [x] **Container Testing**: Test container locally to ensure consistency with host environment
+- [x] **Docker Compose (Optional)**: Create docker-compose.yml for multi-service setups
+- [x] **Environment Consistency**: Verify that containerized training produces identical results to local training
 
 ---
 
