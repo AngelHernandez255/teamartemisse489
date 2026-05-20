@@ -37,6 +37,33 @@ Establish a maintainable and collaborative machine learning workflow with versio
 ### Phase 2: Containerization & Monitoring
 - See [PHASE2.md](PHASE2.md) for detailed checklist
 
+#### Containerization
+This phase adds a project Docker image based on `python:3.11-slim-bookworm`. The image installs pinned Python dependencies with `uv`, installs the local `teamartemisse489` package, and runs the training entrypoint by default.
+
+Install Docker Desktop from the official Docker documentation before running these commands: https://docs.docker.com/get-docker/
+
+Build the image:
+```bash
+docker build -t teamartemisse489:latest .
+```
+
+Run training with the host `models/` folder mounted into the container so trained artifacts persist after the container exits:
+```bash
+docker run -it --rm -v ${PWD}/models:/app/models teamartemisse489:latest
+```
+
+Pass training options after the image name when needed:
+```bash
+docker run -it --rm -v ${PWD}/models:/app/models teamartemisse489:latest --epochs 5 --batch-size 64 --learning-rate 0.001
+```
+
+Optional Docker Compose run:
+```bash
+docker compose up --build
+```
+
+The Dockerfile was adapted from the Week 4 Docker exercise files with the package paths updated for this repository.
+
 ### Phase 3: CI/CD & Deployment
 - See [PHASE3.md](PHASE3.md) for detailed checklist
 
@@ -45,7 +72,7 @@ Establish a maintainable and collaborative machine learning workflow with versio
 ### Prerequisites
 - Python 3.11+ installed
 - Git installed
-- (Optional) Docker and Docker Compose
+- (Optional) Docker and Docker Compose for the Phase 2 container workflow
 
 ### Installation
 

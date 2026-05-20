@@ -42,10 +42,10 @@ clean:
 	find . -type d -name .ruff_cache -exec rm -rf {} + 2>/dev/null || true
 
 docker_build:
-	docker build -t teamartemisse489 -f dockerfiles/Dockerfile .
+	docker build -t teamartemisse489:latest .
 
 docker_run:
-	docker run --rm teamartemisse489
+	docker run -it --rm -v ${PWD}/models:/app/models teamartemisse489:latest
 
 docs:
 	mkdocs serve
