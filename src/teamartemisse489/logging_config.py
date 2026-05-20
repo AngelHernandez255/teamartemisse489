@@ -23,7 +23,11 @@ logging_config = {
     "formatters": {
         "minimal": {"format": "%(message)s"},  # Rich adds its own formatting
         "detailed": {
-            "format": "%(levelname)s %(asctime)s [%(name)s:%(filename)s:%(funcName)s:%(lineno)d]\n%(message)s\n"
+            "format": (
+                "%(levelname)s %(asctime)s "
+                "[%(name)s:%(filename)s:%(funcName)s:%(lineno)d]\n"
+                "%(message)s\n"
+            )
         },
     },
     "handlers": {
