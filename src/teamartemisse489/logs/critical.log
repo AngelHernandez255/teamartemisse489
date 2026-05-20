@@ -1,0 +1,3 @@
+CRITICAL 2026-05-20 11:04:33,747 [__main__:logging_config.py:test_logging:104]
+[bold white on red]CRITICAL:[/bold white on red] Example Critical Message: Out of memory during batch processing
+

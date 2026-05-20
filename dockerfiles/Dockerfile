@@ -1,32 +1,36 @@
+# -----------------------------------------------------------------------------
+# TeamArtemisSE489 training image.
+#
+# Adapted from the Week 4 Docker exercise, updated for this repository's
+# package layout.
+#
+# Build: docker build -t teamartemisse489:latest .
+# Run:   docker run -it --rm -v ${PWD}/models:/app/models teamartemisse489:latest
+# Run:   docker run -it --rm -v %cd%/models:/app/models teamartemisse489:latest # (Windows)
+# -----------------------------------------------------------------------------
 
-# Multi-stage build for TeamArtemisSE489
+FROM python:3.11-slim-bookworm
 
-# Stage 1: Builder
-FROM python:3.11-slim as builder
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y build-essential gcc g++ && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir --user -r requirements.txt
+COPY requirements.txt pyproject.toml ./
 
-# Stage 2: Runtime
-FROM python:3.11-slim
+RUN pip install --no-cache-dir uv==0.5.30 && \
+    uv pip install -r requirements.txt --system
 
-WORKDIR /app
+COPY src/ src/
+COPY data/ data/
+COPY models/ models/
+COPY reports/ reports/
 
-# Copy Python dependencies from builder
-COPY --from=builder /root/.local /root/.local
+RUN pip install --no-cache-dir . --no-deps
 
-# Set environment variables
-ENV PATH=/root/.local/bin:$PATH
-ENV PYTHONUNBUFFERED=1
-
-# Copy project code
-COPY . .
-
-# Install the package
-RUN pip install --no-cache-dir -e .
-
-EXPOSE 8000
-
-ENTRYPOINT ["python", "-m", "teamartemisse489.train_model"]
+ENTRYPOINT ["python", "-u", "-m", "teamartemisse489.train_model"]
