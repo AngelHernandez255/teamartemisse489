@@ -73,24 +73,24 @@ Phase 2 focuses on scaling and operationalizing TeamArtemisSE489 by implementing
 
 ## 6. Configuration Management
 
-- [ ] **Hydra Setup**: Install and configure Hydra for config management
-- [ ] **Config Files**: Create YAML config files for train/eval/inference configurations
-- [ ] **Config Structure**: Organize configs with appropriate hierarchy (base, model, data, etc.)
+- [x] **Hydra Setup**: Install and configure Hydra for config management
+- [x] **Config Files**: Create YAML config files for train/eval/inference configurations
+- [x] **Config Structure**: Organize configs with appropriate hierarchy (base, model, data, etc.)
 - [ ] **Config Example 1**: Create and document sample training config
-- [ ] **Config Example 2**: Create and document alternative config (different hyperparameters)
-- [ ] **Config Validation**: Implement config validation and schema checking
-- [ ] **Override Documentation**: Document how to override config values from command line
-- [ ] **Config Version Control**: Version all configs alongside code
+- [x] **Config Example 2**: Create and document alternative config (different hyperparameters)
+- [x] **Config Validation**: Implement config validation and schema checking
+- [x] **Override Documentation**: Document how to override config values from command line
+- [x] **Config Version Control**: Version all configs alongside code
 
 ---
 
 ## 7. Documentation & Repository Updates
 
-- [ ] **README Update**: Update README to include:
+- [x] **README Update**: Update README to include:
   - [ ] Containerization section with Docker usage
   - [ ] Debugging and profiling guide
   - [ ] Experiment tracking setup instructions
-  - [ ] Configuration management guide
+  - [x] Configuration management guide
   - [ ] Logging usage examples
 - [ ] **Architecture Documentation**: Document system architecture with diagrams
 - [ ] **Setup Guide**: Update setup guide to include all Phase 2 tools
