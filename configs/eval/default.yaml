@@ -1,0 +1,6 @@
+metrics:
+  - rmse
+  - mae
+
+evaluation_output_dir: reports/evaluation
+save_results: true
