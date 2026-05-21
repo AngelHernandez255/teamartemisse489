@@ -85,33 +85,47 @@ logging_config = {
     },
 }
 
+
 def setup_logging() -> None:
     """Configure the root logger for the application."""
-    dictConfig(logging_config) #apply config
-    logger = logging.getLogger(__name__) #get root logger
-    #set handler to rich
+    dictConfig(logging_config)  # apply config
+    logger = logging.getLogger(__name__)  # get root logger
+    # set handler to rich
     logger.root.handlers[0] = RichHandler(markup=True, rich_tracebacks=True)
-    logger.info("[bold green]Info:[/bold green] \
-Rich logging has activated Successfully!")
+    logger.info(
+        "[bold green]Info:[/bold green] \
+Rich logging has activated Successfully!"
+    )
 
 
-def test_logging() -> None :
-    logger = logging.getLogger(__name__) #get root logger
-    logger.debug("[bold]Debug:[/bold] Example Debug Message: \
-Loading dataset with 10,000 samples")
-    logger.info("[bold green]Info:[/bold green] Example Info Message: \
-Model training started with learning rate=0.001")
-    logger.warning("[bold yellow]Warning:[/bold yellow] Example Warning Message: \
-Validation loss increasing, possible overfitting")
-    logger.error("[bold red]Error:[/bold red] Example Error Message: \
-Failed to save model weights to S3")
-    logger.critical("[bold white on red]CRITICAL:[/bold white on red] \
-Example Critical Message: Out of memory during batch processing")
+def test_logging() -> None:
+    logger = logging.getLogger(__name__)  # get root logger
+    logger.debug(
+        "[bold]Debug:[/bold] Example Debug Message: \
+Loading dataset with 10,000 samples"
+    )
+    logger.info(
+        "[bold green]Info:[/bold green] Example Info Message: \
+Model training started with learning rate=0.001"
+    )
+    logger.warning(
+        "[bold yellow]Warning:[/bold yellow] Example Warning Message: \
+Validation loss increasing, possible overfitting"
+    )
+    logger.error(
+        "[bold red]Error:[/bold red] Example Error Message: \
+Failed to save model weights to S3"
+    )
+    logger.critical(
+        "[bold white on red]CRITICAL:[/bold white on red] \
+Example Critical Message: Out of memory during batch processing"
+    )
 
 
 def get_logger(name: str) -> logging.Logger:
     """Return a module-level logger."""
     return logging.getLogger(name)
+
 
 # example Here
 setup_logging()
