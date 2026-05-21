@@ -31,6 +31,30 @@ from teamartemisse489.utils.seed import set_seed
 logger = get_logger(__name__)
 
 
+def validate_config(cfg) -> None:
+    """Validate important Hydra config values."""
+    if cfg.training.epochs <= 0:
+        raise ValueError("training.epochs must be greater than 0")
+
+    if cfg.training.batch_size <= 0:
+        raise ValueError("training.batch_size must be greater than 0")
+
+    if cfg.training.learning_rate <= 0:
+        raise ValueError("training.learning_rate must be greater than 0")
+
+    if cfg.inference.top_k <= 0:
+        raise ValueError("inference.top_k must be greater than 0")
+
+def train(
+    data_path: Path, model_dir: Path, epochs: int, batch_size: int, lr: float
+) -> None:
+    """Train the model and persist the fitted artifact to ``model_dir``."""
+    logger.info(
+        "Training with data=%s epochs=%d bs=%d lr=%g",
+        data_path,
+        epochs,
+        batch_size,
+        lr,
 def eval_topk(predictions: list[Any], k: int = 10, threshold: float = 3.0):
     user_data = defaultdict(list)
 
@@ -150,6 +174,8 @@ def train(data_path: Path, model_dir: Path, cfg) -> tuple[Path, dict[str, float]
 def main():
 
     setup_logging()
+    validate_config(cfg)
+    set_seed(cfg.training.seed)
     wandb.init(
         project="Team-Artemisse489-Recommender",
         entity="sakshigorkhaliprojects",
