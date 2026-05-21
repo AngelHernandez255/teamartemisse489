@@ -1,0 +1,13 @@
+defaults:
+  - data: default
+  - training: default
+  - paths: local
+  - _self_
+
+project:
+  name: teamartemisse489
+  phase: phase_2
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
