@@ -4,6 +4,8 @@ defaults:
   - paths: local
   - logging: default
   - model: svd
+  - eval: default
+  - inference: default
   - _self_
 
 project:
