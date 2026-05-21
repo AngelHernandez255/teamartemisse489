@@ -1,0 +1,8 @@
+runtime: local
+
+paths:
+  data_path: data/processed/ready_to_train_1M.parquet
+  model_dir: models
+
+logging:
+  level: DEBUG

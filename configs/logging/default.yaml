@@ -1,2 +1,7 @@
 level: INFO
 log_file: logs/training.log
+
+wandb_project: Team-Artemisse489-Recommender
+wandb_entity: sakshigorkhaliprojects
+run_name: svd-training
+wandb_mode: offline

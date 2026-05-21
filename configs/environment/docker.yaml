@@ -1,0 +1,8 @@
+runtime: docker
+
+paths:
+  data_path: /app/data/processed/ready_to_train_1M.parquet
+  model_dir: /app/models
+
+logging:
+  level: INFO

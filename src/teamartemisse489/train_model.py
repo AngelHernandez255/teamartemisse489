@@ -55,6 +55,7 @@ def train(
         epochs,
         batch_size,
         lr,
+    )
 def eval_topk(predictions: list[Any], k: int = 10, threshold: float = 3.0):
     user_data = defaultdict(list)
 
@@ -99,15 +100,19 @@ def train(data_path: Path, model_dir: Path, cfg) -> tuple[Path, dict[str, float]
         df[["userId", "movieId", rating_col]].rename(columns={rating_col: "rating"}),
         reader)
 
-    trainset, testset = train_test_split(data, test_size=cfg.test_size,random_state=cfg.random_state)
-
+    # trainset, testset = train_test_split(data, test_size=cfg.data.test_size,random_state=cfg.random_state)
+    trainset, testset = train_test_split(
+        data,
+        test_size=cfg.data.test_size,
+        random_state=cfg.training.seed,
+    )
     # Model
     model = SVD(
-        n_factors=cfg.n_factors,
-        n_epochs=cfg.n_epochs,
-        lr_all=cfg.lr_all,
-        reg_all=cfg.reg_all,
-        random_state=cfg.random_state
+        n_factors=cfg.model.n_factors,
+        n_epochs=cfg.model.n_epochs,
+        lr_all=cfg.model.lr_all,
+        reg_all=cfg.model.reg_all,
+        random_state=cfg.training.seed
     )
 
     # Train
@@ -121,7 +126,7 @@ def train(data_path: Path, model_dir: Path, cfg) -> tuple[Path, dict[str, float]
     # metrics
     rmse_val = accuracy.rmse(predictions, verbose=False)
     mae_val = accuracy.mae(predictions, verbose=False)
-    eval_res = eval_topk(predictions, k=cfg.k, threshold=cfg.threshold)
+    eval_res = eval_topk(predictions, k=cfg.eval.k, threshold=cfg.eval.threshold)
     metrics = {
         "rmse": rmse_val,
         "mae": mae_val,
@@ -144,8 +149,8 @@ def train(data_path: Path, model_dir: Path, cfg) -> tuple[Path, dict[str, float]
             "rating_column": rating_col,
             "rating_scale_min": 1,
             "rating_scale_max": 5,
-            "test_size": float(cfg.test_size),
-            "random_state": int(cfg.random_state),
+            "test_size": float(cfg.data.test_size),
+            "random_state": int(cfg.training.seed),
             "preprocessing_target_rating_used": bool("target_rating" in df.columns),
         }
     )
@@ -171,46 +176,70 @@ def train(data_path: Path, model_dir: Path, cfg) -> tuple[Path, dict[str, float]
     return model_path, metrics
 
 
-def main():
+# def main():
 
+#     setup_logging()
+#     validate_config(cfg)
+#     set_seed(cfg.training.seed)
+#     wandb.init(
+#         project="Team-Artemisse489-Recommender",
+#         entity="sakshigorkhaliprojects",
+#         name="svd-training",
+#         config={
+#             "n_factors": 50,
+#             "n_epochs": 30,
+#             "lr_all": 0.005,
+#             "reg_all": 0.02,
+#             "random_state": 42,
+#             "test_size": 0.2,
+#             "k": 10,
+#             "threshold": 3.0,
+#         },
+#     )
+
+#     cfg = wandb.config
+#     wandb.run.name = (
+#         f"svd_nf{cfg.n_factors}_ep{cfg.n_epochs}_lr{cfg.lr_all}_reg{cfg.reg_all}"
+#     )
+
+#     train(
+#         data_path=PROCESSED_DATA_DIR / "ready_to_train_1M.parquet",
+#         model_dir=MODELS_DIR,
+#         cfg=cfg,
+#     )
+
+#     wandb.finish()
+#     # parser = argparse.ArgumentParser(description="Train the model") 
+#     # parser.add_argument("--data-path", type=Path, default=PROCESSED_DATA_DIR) 
+#     # parser.add_argument("--model-dir", type=Path, default=MODELS_DIR) 
+#     # parser.add_argument("--epochs", type=int, default=cfg.epochs)
+#     # parser.add_argument("--batch-size", type=int, default=cfg.batch_size) 
+#     # parser.add_argument("--learning-rate", type=float, default=cfg.learning_rate) 
+#     # parser.add_argument("--seed", type=int, default=cfg.seed) # args = parser.parse_args() # setup_logging() # set_seed(args.seed) # train(args.data_path, args.model_dir, args.epochs, args.batch_size, args.learning_rate) # logger.info("Training complete")
+@hydra.main(version_base=None, config_path="../../configs", config_name="config")
+def main(cfg: DictConfig) -> None:
     setup_logging()
     validate_config(cfg)
     set_seed(cfg.training.seed)
-    wandb.init(
-        project="Team-Artemisse489-Recommender",
-        entity="sakshigorkhaliprojects",
-        name="svd-training",
-        config={
-            "n_factors": 50,
-            "n_epochs": 30,
-            "lr_all": 0.005,
-            "reg_all": 0.02,
-            "random_state": 42,
-            "test_size": 0.2,
-            "k": 10,
-            "threshold": 3.0,
-        },
-    )
 
-    cfg = wandb.config
-    wandb.run.name = (
-        f"svd_nf{cfg.n_factors}_ep{cfg.n_epochs}_lr{cfg.lr_all}_reg{cfg.reg_all}"
+    logger.info("Loaded Hydra config:\n%s", OmegaConf.to_yaml(cfg))
+
+    wandb.init(
+        project=cfg.logging.wandb_project,
+        entity=cfg.logging.wandb_entity,
+        name=cfg.logging.run_name,
+        config=OmegaConf.to_container(cfg, resolve=True),
+        mode=cfg.logging.wandb_mode,
     )
 
     train(
-        data_path=PROCESSED_DATA_DIR / "ready_to_train_1M.parquet",
-        model_dir=MODELS_DIR,
+        data_path=Path(cfg.data.data_path),
+        model_dir=Path(cfg.paths.model_dir),
         cfg=cfg,
     )
 
     wandb.finish()
-    # parser = argparse.ArgumentParser(description="Train the model") 
-    # parser.add_argument("--data-path", type=Path, default=PROCESSED_DATA_DIR) 
-    # parser.add_argument("--model-dir", type=Path, default=MODELS_DIR) 
-    # parser.add_argument("--epochs", type=int, default=cfg.epochs)
-    # parser.add_argument("--batch-size", type=int, default=cfg.batch_size) 
-    # parser.add_argument("--learning-rate", type=float, default=cfg.learning_rate) 
-    # parser.add_argument("--seed", type=int, default=cfg.seed) # args = parser.parse_args() # setup_logging() # set_seed(args.seed) # train(args.data_path, args.model_dir, args.epochs, args.batch_size, args.learning_rate) # logger.info("Training complete")
+    logger.info("Training complete")
 
 if __name__ == "__main__":
     main()
