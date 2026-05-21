@@ -137,6 +137,34 @@ Debugging scenario 1: if training fails with missing `userId`, `movieId`, or `ra
 
 Debugging scenario 2: if training fails because ratings are null, nonnumeric, or outside the expected 1-5 range, inspect `df["rating"].describe()` and the invalid rows before creating the Surprise dataset.
 
+## Hydra Configuration
+
+Run default training:
+
+```bash
+python -m teamartemisse489.train_model
+```
+
+Override configs:
+
+```bash
+python -m teamartemisse489.train_model model.n_factors=200
+python -m teamartemisse489.train_model training.batch_size=64
+python -m teamartemisse489.train_model environment=docker
+```
+
+Hydra configs are organized into:
+- training
+- model
+- data
+- eval
+- inference
+- logging
+- environment
+
+
+
+
 ### Phase 3: CI/CD & Deployment
 - See [PHASE3.md](PHASE3.md) for detailed checklist
 
