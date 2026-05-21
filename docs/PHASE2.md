@@ -23,6 +23,40 @@ This phase focuses on building, training, and validating machine learning models
 - All experiments logged and documented
 - MLflow experiment tracking configured
 
+### 2. Debugging Practices
+- Debugger tools: `pdb`, VS Code Python Debugger, and the trainer's `--debug`
+  pause point
+- Implementation: `models/train.py`
+- Validation coverage: missing parquet file, empty dataframe, missing required
+  columns, null required values, nonnumeric ratings, and ratings outside the
+  expected 1-5 range
+
+Run line-by-line debugging:
+```bash
+python -m pdb models/train.py
+```
+
+Run until the dataframe is loaded and validated, then pause:
+```bash
+python models/train.py --debug
+```
+
+Useful debugger expressions:
+```python
+p df.shape
+p df.dtypes
+p df[["userId", "movieId", "rating"]].head()
+p df["rating"].describe()
+```
+
+Scenario 1: if `userId`, `movieId`, or `rating` is missing, training raises a
+clear validation error before Surprise receives the dataframe. Inspect
+`df.columns` and fix the data preparation step.
+
+Scenario 2: if ratings are null, nonnumeric, or outside 1-5, training raises a
+clear validation error before fitting. Inspect `df["rating"].describe()` and
+the invalid rows to correct preprocessing.
+
 ### 3. Performance Analysis
 - Model comparison results
 - Hyperparameter sensitivity analysis
