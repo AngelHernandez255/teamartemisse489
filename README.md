@@ -12,9 +12,11 @@
 
 ## Project Overview
 
-We are TeamArtemisSE489, a team for the class Global Software Development, and we are working on a machine learning project that uses machine learning to recommend movies. The data set consists of 56 million user reviews of 10500 Movies. The project will use this dataset to provide recommendations to users on what movie to see next. 
+We are TeamArtemisSE489, a team for the class Machine Learning Engineering for Production (MLOps), developing a scalable movie recommendation system powered by machine learning. Our project focuses on building a collaborative filtering-based recommender that suggests personalized movies to users based on historical rating patterns and user interactions.
 
-"PROBLEM STATEMENT"
+The system uses the Surprise library's Singular Value Decomposition (SVD) algorithm as the collaborative filtering model. The original dataset contains approximately 56 million user reviews across 10,500 movies, while current development and experimentation are performed on a 1 million review subset for faster iteration and testing.
+
+As digital movie catalogs continue to expand, users often struggle to discover content aligned with their interests. This project addresses that challenge by leveraging collaborative filtering techniques to predict user preferences and recommend relevant movies. In addition to recommendation accuracy, the project emphasizes MLOps best practices by building a modular, reproducible, and maintainable machine learning pipeline that supports scalable experimentation, collaboration, and future deployment.
 
 **Key Objectives:**
 - [x] Objective 1
