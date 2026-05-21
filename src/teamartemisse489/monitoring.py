@@ -152,14 +152,19 @@ class ResourceMonitor:
         if self._writer is None or self._file is None:
             return
 
-        complete_row = {field: "" for field in self.fieldnames}
-        complete_row.update(row)
+        complete_row: dict[str, str] = {field: "" for field in self.fieldnames}
+        for key, value in row.items():
+            if key in complete_row:
+                complete_row[key] = str(value)
+
         if not complete_row["timestamp_utc"]:
             complete_row["timestamp_utc"] = datetime.now(UTC).isoformat()
         if not complete_row["elapsed_seconds"]:
-            complete_row["elapsed_seconds"] = round(
-                time.perf_counter() - self._started_at,
-                3,
+            complete_row["elapsed_seconds"] = str(
+                round(
+                    time.perf_counter() - self._started_at,
+                    3,
+                )
             )
 
         self._writer.writerow(complete_row)

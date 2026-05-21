@@ -84,6 +84,36 @@ docker run -it --rm -v ${PWD}/models:/app/models -v ${PWD}/logs:/app/logs --entr
 
 The monitoring output is written to `logs/system_metrics.csv`. The most useful columns are `system_cpu_percent` for machine load, `system_memory_percent` and `system_memory_used_mb` for RAM pressure, `process_memory_rss_mb` for the training process memory footprint, and `elapsed_seconds` for runtime. For model health, the recommender trainer prints RMSE at the end of the run; lower RMSE indicates better recommendation accuracy on the held-out test split.
 
+#### Debugging Practices
+The baseline recommender trainer includes explicit validation checks before model training so common ML data bugs fail early with clear messages. It checks that the processed parquet file exists, the dataframe is not empty, required columns are present, required values are not null, and ratings are numeric values between 1 and 5.
+
+Run the trainer normally:
+```bash
+python models/train.py
+```
+
+Use Python's built-in debugger when you need line-by-line inspection:
+```bash
+python -m pdb models/train.py
+```
+
+Use the project debug hook to pause after data loading and validation:
+```bash
+python models/train.py --debug
+```
+
+At the debugger prompt, useful checks include:
+```python
+p df.shape
+p df.dtypes
+p df[["userId", "movieId", "rating"]].head()
+p df["rating"].describe()
+```
+
+Debugging scenario 1: if training fails with missing `userId`, `movieId`, or `rating` columns, inspect `df.columns` and fix the preprocessing step that writes `data/processed/ready_to_train_data.parquet`.
+
+Debugging scenario 2: if training fails because ratings are null, nonnumeric, or outside the expected 1-5 range, inspect `df["rating"].describe()` and the invalid rows before creating the Surprise dataset.
+
 ### Phase 3: CI/CD & Deployment
 - See [PHASE3.md](PHASE3.md) for detailed checklist
 
