@@ -1,0 +1,5 @@
+name: knn
+type: collaborative_filtering
+n_neighbors: 20
+similarity: cosine
+artifact_name: knn_model.joblib

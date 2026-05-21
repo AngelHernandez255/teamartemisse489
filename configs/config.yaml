@@ -2,6 +2,8 @@ defaults:
   - data: default
   - training: default
   - paths: local
+  - logging: default
+  - model: svd
   - _self_
 
 project:
