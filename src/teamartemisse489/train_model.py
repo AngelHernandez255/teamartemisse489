@@ -13,6 +13,20 @@ from teamartemisse489.utils.seed import set_seed
 logger = get_logger(__name__)
 
 
+def validate_config(cfg) -> None:
+    """Validate important Hydra config values."""
+    if cfg.training.epochs <= 0:
+        raise ValueError("training.epochs must be greater than 0")
+
+    if cfg.training.batch_size <= 0:
+        raise ValueError("training.batch_size must be greater than 0")
+
+    if cfg.training.learning_rate <= 0:
+        raise ValueError("training.learning_rate must be greater than 0")
+
+    if cfg.inference.top_k <= 0:
+        raise ValueError("inference.top_k must be greater than 0")
+
 def train(
     data_path: Path, model_dir: Path, epochs: int, batch_size: int, lr: float
 ) -> None:
@@ -31,6 +45,7 @@ def train(
 def main(cfg: DictConfig) -> None:
     """Hydra entrypoint for model training."""
     setup_logging()
+    validate_config(cfg)
     set_seed(cfg.training.seed)
 
     logger.info("Loaded Hydra config:\n%s", OmegaConf.to_yaml(cfg))
