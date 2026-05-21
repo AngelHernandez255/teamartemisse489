@@ -2,31 +2,28 @@
 
 from __future__ import annotations
 
-import argparse
+import os
 import time
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
+
+import hydra
 import joblib
 import pandas as pd
-import os 
+import wandb
+from omegaconf import DictConfig, OmegaConf
+from surprise import Dataset, Reader, accuracy
+from surprise.model_selection import train_test_split
+from surprise.prediction_algorithms import SVD
+
+from teamartemisse489.logging_config import get_logger, setup_logging
+from teamartemisse489.utils.seed import set_seed
 
 _WANDB_RUNS = Path.home() / ".wandb-runs"
 _WANDB_RUNS.mkdir(parents=True, exist_ok=True)
 os.environ.setdefault("WANDB_DIR", str(_WANDB_RUNS))
 
-import wandb
-from surprise.accuracy import rmse
-from surprise import Dataset, Reader, accuracy
-from surprise.model_selection import train_test_split
-from surprise.prediction_algorithms import SVD
-
-import hydra
-from omegaconf import DictConfig, OmegaConf
-
-from teamartemisse489.logging_config import get_logger, setup_logging
-from teamartemisse489.utils.io import save_json
-from teamartemisse489.utils.seed import set_seed
 
 logger = get_logger(__name__)
 
@@ -45,17 +42,9 @@ def validate_config(cfg) -> None:
     if cfg.inference.top_k <= 0:
         raise ValueError("inference.top_k must be greater than 0")
 
-def train(
-    data_path: Path, model_dir: Path, epochs: int, batch_size: int, lr: float
-) -> None:
     """Train the model and persist the fitted artifact to ``model_dir``."""
-    logger.info(
-        "Training with data=%s epochs=%d bs=%d lr=%g",
-        data_path,
-        epochs,
-        batch_size,
-        lr,
-    )
+
+
 def eval_topk(predictions: list[Any], k: int = 10, threshold: float = 3.0):
     user_data = defaultdict(list)
 
@@ -65,17 +54,32 @@ def eval_topk(predictions: list[Any], k: int = 10, threshold: float = 3.0):
     precision_list, recall_list = [], []
 
     for _, items in user_data.items():
-        items.sort(key=lambda x: x[0], reverse=True) # Sort by estimated rating (highest first)
+        items.sort(
+            key=lambda x: x[0], reverse=True
+        )  # Sort by estimated rating (highest first)
         topk = items[:k]
-        n_rel = sum(1 for _, r in items if r >= threshold) # Number of relevant items
-        n_tp = sum(1 for e, r in topk if r >= threshold) # Number of recommended items in top K
+        n_rel = sum(1 for _, r in items if r >= threshold)  # Number of relevant items
+        n_tp = sum(
+            1 for e, r in topk if r >= threshold
+        )  # Number of recommended items in top K
         tp += n_tp
         fp += max(0, len(topk) - n_tp)
         fn += max(0, n_rel - n_tp)
         precision_list.append(n_tp / k if k else 0.0)
         recall_list.append(n_tp / n_rel if n_rel else 0.0)
 
-    return {"tp": tp,"fp": fp, "fn": fn, "precision_list": precision_list, "recall_list": recall_list, "precision": sum(precision_list) / len(precision_list) if precision_list else 0.0,"recall": sum(recall_list) / len(recall_list) if recall_list else 0.0,}
+    return {
+        "tp": tp,
+        "fp": fp,
+        "fn": fn,
+        "precision_list": precision_list,
+        "recall_list": recall_list,
+        "precision": sum(precision_list) / len(precision_list)
+        if precision_list
+        else 0.0,
+        "recall": sum(recall_list) / len(recall_list) if recall_list else 0.0,
+    }
+
 
 # Train
 def train(data_path: Path, model_dir: Path, cfg) -> tuple[Path, dict[str, float]]:
@@ -88,19 +92,21 @@ def train(data_path: Path, model_dir: Path, cfg) -> tuple[Path, dict[str, float]
     num_movies = int(df["movieId"].nunique())
     num_ratings = int(len(df))
 
-    wandb.log({
-        "num_users": num_users,
-        "num_movies": num_movies,
-        "num_ratings": num_ratings,
-    })
+    wandb.log(
+        {
+            "num_users": num_users,
+            "num_movies": num_movies,
+            "num_ratings": num_ratings,
+        }
+    )
 
     # Surprise dataset
     reader = Reader(rating_scale=(1, 5))
     data = Dataset.load_from_df(
         df[["userId", "movieId", rating_col]].rename(columns={rating_col: "rating"}),
-        reader)
+        reader,
+    )
 
-    # trainset, testset = train_test_split(data, test_size=cfg.data.test_size,random_state=cfg.random_state)
     trainset, testset = train_test_split(
         data,
         test_size=cfg.data.test_size,
@@ -112,7 +118,7 @@ def train(data_path: Path, model_dir: Path, cfg) -> tuple[Path, dict[str, float]
         n_epochs=cfg.model.n_epochs,
         lr_all=cfg.model.lr_all,
         reg_all=cfg.model.reg_all,
-        random_state=cfg.training.seed
+        random_state=cfg.training.seed,
     )
 
     # Train
@@ -155,13 +161,15 @@ def train(data_path: Path, model_dir: Path, cfg) -> tuple[Path, dict[str, float]
         }
     )
 
-    wandb.log({
-        "precision_distribution": wandb.Histogram(eval_res["precision_list"]),
-        "recall_distribution": wandb.Histogram(eval_res["recall_list"]),
-        "tp": eval_res["tp"],
-        "fp": eval_res["fp"],
-        "fn": eval_res["fn"],
-    })
+    wandb.log(
+        {
+            "precision_distribution": wandb.Histogram(eval_res["precision_list"]),
+            "recall_distribution": wandb.Histogram(eval_res["recall_list"]),
+            "tp": eval_res["tp"],
+            "fp": eval_res["fp"],
+            "fn": eval_res["fn"],
+        }
+    )
 
     # save model
     model_dir.mkdir(parents=True, exist_ok=True)
@@ -176,46 +184,6 @@ def train(data_path: Path, model_dir: Path, cfg) -> tuple[Path, dict[str, float]
     return model_path, metrics
 
 
-# def main():
-
-#     setup_logging()
-#     validate_config(cfg)
-#     set_seed(cfg.training.seed)
-#     wandb.init(
-#         project="Team-Artemisse489-Recommender",
-#         entity="sakshigorkhaliprojects",
-#         name="svd-training",
-#         config={
-#             "n_factors": 50,
-#             "n_epochs": 30,
-#             "lr_all": 0.005,
-#             "reg_all": 0.02,
-#             "random_state": 42,
-#             "test_size": 0.2,
-#             "k": 10,
-#             "threshold": 3.0,
-#         },
-#     )
-
-#     cfg = wandb.config
-#     wandb.run.name = (
-#         f"svd_nf{cfg.n_factors}_ep{cfg.n_epochs}_lr{cfg.lr_all}_reg{cfg.reg_all}"
-#     )
-
-#     train(
-#         data_path=PROCESSED_DATA_DIR / "ready_to_train_1M.parquet",
-#         model_dir=MODELS_DIR,
-#         cfg=cfg,
-#     )
-
-#     wandb.finish()
-#     # parser = argparse.ArgumentParser(description="Train the model") 
-#     # parser.add_argument("--data-path", type=Path, default=PROCESSED_DATA_DIR) 
-#     # parser.add_argument("--model-dir", type=Path, default=MODELS_DIR) 
-#     # parser.add_argument("--epochs", type=int, default=cfg.epochs)
-#     # parser.add_argument("--batch-size", type=int, default=cfg.batch_size) 
-#     # parser.add_argument("--learning-rate", type=float, default=cfg.learning_rate) 
-#     # parser.add_argument("--seed", type=int, default=cfg.seed) # args = parser.parse_args() # setup_logging() # set_seed(args.seed) # train(args.data_path, args.model_dir, args.epochs, args.batch_size, args.learning_rate) # logger.info("Training complete")
 @hydra.main(version_base=None, config_path="../../configs", config_name="config")
 def main(cfg: DictConfig) -> None:
     setup_logging()
@@ -240,6 +208,7 @@ def main(cfg: DictConfig) -> None:
 
     wandb.finish()
     logger.info("Training complete")
+
 
 if __name__ == "__main__":
     main()
