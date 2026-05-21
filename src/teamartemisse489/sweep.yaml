@@ -1,0 +1,31 @@
+## W&B sweep configured for the recommender hyperparameter grid
+## Usage:
+##   cd src/teamartemisse489
+##   wandb sweep sweep.yaml
+##   wandb agent <sweep-id>
+
+name: recommender-grid-sweep
+project: Team-Artemisse489-Recommender
+entity: sakshigorkhaliprojects
+
+# Ensure the agent subprocess uses the same python interpreter as the agent
+command:
+  - ${env}
+  - ${interpreter}
+  - -m
+  - teamartemisse489.train_model
+  - ${args}
+
+method: grid
+metric:
+  name: precision_at_10
+  goal: maximize
+parameters:
+  n_factors:
+    values: [50, 100]
+  n_epochs:
+    values: [20, 30]
+  lr_all:
+    values: [0.005, 0.01]
+  reg_all:
+    values: [0.02, 0.1]

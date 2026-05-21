@@ -64,6 +64,28 @@ docker compose up --build
 
 The Dockerfile was adapted from the Week 4 Docker exercise files with the package paths updated for this repository.
 
+
+#### Experiment Tracking
+
+This project uses Weights & Biases for experiment tracking.
+
+- Project name: `Team-Artemisse489-Recommender`
+- Entity: `sakshigorkhaliprojects`
+- Training entrypoint: `python -m teamartemisse489.train_model`
+- Sweep file: `src/teamartemisse489/sweep.yaml`
+
+The training code logs hyperparameters, evaluation metrics, and the trained SVD model artifact to W&B. For the sweep, we optimize `precision_at_10` because the recommender's main goal is to return relevant movies in the top-10 list. `rmse` is still logged as a secondary metric for reference.
+
+To run the sweep:
+
+```bash
+cd src/teamartemisse489
+wandb sweep sweep.yaml
+wandb agent <sweep-id>
+```
+
+Run names follow the hyperparameters, for example `svd_nf50_ep30_lr0.005_reg0.02`, so it is easy to compare runs in the W&B UI.
+
 ### Phase 3: CI/CD & Deployment
 - See [PHASE3.md](PHASE3.md) for detailed checklist
 
@@ -116,6 +138,7 @@ make predict
 # See all available commands
 make help
 ```
+
 
 ## Contribution Summary
 
