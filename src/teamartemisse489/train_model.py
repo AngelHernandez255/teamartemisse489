@@ -1,4 +1,4 @@
-"""Model training entrypoint."""
+"""Model training entrypoint with Hydra configuration."""
 
 from __future__ import annotations
 
@@ -21,7 +21,9 @@ from surprise import Dataset, Reader, accuracy
 from surprise.model_selection import train_test_split
 from surprise.prediction_algorithms import SVD
 
-from teamartemisse489.config import DEFAULT_CONFIG, MODELS_DIR, PROCESSED_DATA_DIR
+import hydra
+from omegaconf import DictConfig, OmegaConf
+
 from teamartemisse489.logging_config import get_logger, setup_logging
 from teamartemisse489.utils.io import save_json
 from teamartemisse489.utils.seed import set_seed

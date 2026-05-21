@@ -20,13 +20,13 @@ Phase 2 focuses on scaling and operationalizing TeamArtemisSE489 by implementing
 
 ## 2. Monitoring & Debugging
 
-- [ ] **Debugging Tools**: Set up pdb/ipdb for interactive debugging
-- [ ] **Debugging Documentation**: Document how to debug in containerized environment
-- [ ] **Debug Scenario 1**: Create example scenario and solution document for [specific problem]
-- [ ] **Debug Scenario 2**: Create example scenario and solution document for [specific problem]
-- [ ] **Logging for Debugging**: Implement detailed logging at critical points in code
-- [ ] **Model Assertion Checks**: Add assertions to catch data/model anomalies early
-- [ ] **Training Validation**: Implement sanity checks (NaN detection, shape validation, etc.)
+- [x] **Debugging Tools**: Set up pdb/ipdb for interactive debugging
+- [x] **Debugging Documentation**: Document how to debug in containerized environment
+- [x] **Debug Scenario 1**: Create example scenario and solution document for [specific problem]
+- [x] **Debug Scenario 2**: Create example scenario and solution document for [specific problem]
+- [x] **Logging for Debugging**: Implement detailed logging at critical points in code
+- [x] **Model Assertion Checks**: Add assertions to catch data/model anomalies early
+- [x] **Training Validation**: Implement sanity checks (NaN detection, shape validation, etc.)
 
 ---
 

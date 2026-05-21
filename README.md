@@ -12,9 +12,11 @@
 
 ## Project Overview
 
-We are TeamArtemisSE489, a team for the class Global Software Development, and we are working on a machine learning project that uses machine learning to recommend movies. The data set consists of 56 million user reviews of 10500 Movies. The project will use this dataset to provide recommendations to users on what movie to see next. 
+We are TeamArtemisSE489, a team for the class Machine Learning Engineering for Production (MLOps), developing a scalable movie recommendation system powered by machine learning. Our project focuses on building a collaborative filtering-based recommender that suggests personalized movies to users based on historical rating patterns and user interactions.
 
-"PROBLEM STATEMENT"
+The system uses the Surprise library's Singular Value Decomposition (SVD) algorithm as the collaborative filtering model. The original dataset contains approximately 56 million user reviews across 10,500 movies, while current development and experimentation are performed on a 1 million review subset for faster iteration and testing.
+
+As digital movie catalogs continue to expand, users often struggle to discover content aligned with their interests. This project addresses that challenge by leveraging collaborative filtering techniques to predict user preferences and recommend relevant movies. In addition to recommendation accuracy, the project emphasizes MLOps best practices by building a modular, reproducible, and maintainable machine learning pipeline that supports scalable experimentation, collaboration, and future deployment.
 
 **Key Objectives:**
 - [x] Objective 1
@@ -85,6 +87,55 @@ wandb agent <sweep-id>
 ```
 
 Run names follow the hyperparameters, for example `svd_nf50_ep30_lr0.005_reg0.02`, so it is easy to compare runs in the W&B UI.
+#### Monitoring
+For Phase 2 monitoring, this project uses a lightweight `psutil` CSV monitor. It records CPU usage, RAM usage, process memory, process CPU, thread count, timestamps, and elapsed time while the training command runs. We chose this option because it works locally and inside Docker without requiring a separate dashboard service.
+
+Run the Surprise SVD trainer with monitoring:
+```bash
+python scripts/monitor_training.py --output logs/system_metrics.csv -- python models/train.py
+```
+
+Run the package training entrypoint with monitoring:
+```bash
+python scripts/monitor_training.py --output logs/system_metrics.csv -- python -m teamartemisse489.train_model
+```
+
+Run monitoring inside Docker while keeping logs and models on the host:
+```bash
+docker run -it --rm -v ${PWD}/models:/app/models -v ${PWD}/logs:/app/logs --entrypoint python teamartemisse489:latest scripts/monitor_training.py --output logs/system_metrics.csv -- python models/train.py
+```
+
+The monitoring output is written to `logs/system_metrics.csv`. The most useful columns are `system_cpu_percent` for machine load, `system_memory_percent` and `system_memory_used_mb` for RAM pressure, `process_memory_rss_mb` for the training process memory footprint, and `elapsed_seconds` for runtime. For model health, the recommender trainer prints RMSE at the end of the run; lower RMSE indicates better recommendation accuracy on the held-out test split.
+
+#### Debugging Practices
+The baseline recommender trainer includes explicit validation checks before model training so common ML data bugs fail early with clear messages. It checks that the processed parquet file exists, the dataframe is not empty, required columns are present, required values are not null, and ratings are numeric values between 1 and 5.
+
+Run the trainer normally:
+```bash
+python models/train.py
+```
+
+Use Python's built-in debugger when you need line-by-line inspection:
+```bash
+python -m pdb models/train.py
+```
+
+Use the project debug hook to pause after data loading and validation:
+```bash
+python models/train.py --debug
+```
+
+At the debugger prompt, useful checks include:
+```python
+p df.shape
+p df.dtypes
+p df[["userId", "movieId", "rating"]].head()
+p df["rating"].describe()
+```
+
+Debugging scenario 1: if training fails with missing `userId`, `movieId`, or `rating` columns, inspect `df.columns` and fix the preprocessing step that writes `data/processed/ready_to_train_data.parquet`.
+
+Debugging scenario 2: if training fails because ratings are null, nonnumeric, or outside the expected 1-5 range, inspect `df["rating"].describe()` and the invalid rows before creating the Surprise dataset.
 
 ### Phase 3: CI/CD & Deployment
 - See [PHASE3.md](PHASE3.md) for detailed checklist
