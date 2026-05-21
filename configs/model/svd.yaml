@@ -1,0 +1,5 @@
+name: svd
+n_factors: 100
+n_epochs: 20
+lr_all: 0.005
+reg_all: 0.02
