@@ -6,6 +6,7 @@ defaults:
   - model: svd
   - eval: default
   - inference: default
+  - environment: local
   - _self_
 
 project:

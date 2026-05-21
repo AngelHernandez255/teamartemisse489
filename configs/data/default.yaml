@@ -1,1 +1,5 @@
-data_path: data/processed
+data_path: data/processed/ready_to_train_1M.parquet
+test_size: 0.2
+user_col: userId
+item_col: movieId
+rating_col: target_rating
