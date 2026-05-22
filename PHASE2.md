@@ -291,6 +291,8 @@ The model and evaluation outputs were saved locally and tracked as artifacts in 
   - `models/svd_metrics.json`
 
 The model is saved locally, then attached to W&B as an artifact so the final run can be traced back to the exact trained model.
+![trainlog](trainlog.png)
+
 
 - [x] **Experiment Comparison**: Create comparison of at least 3 different experiments
 We compared multiple experiments using the W&B Runs table.
