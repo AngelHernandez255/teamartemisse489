@@ -221,8 +221,29 @@ make help
 
 ## Contribution Summary
 
-TODO:
-- [x] Team members have been assigned
+### Phase 1
+
+Anjan Kumar Basavaraj Gurudatt
+-
+Joshua Nevin Chandrasekar 
+-
+Sakshi Gorkhali
+-
+Angel Hernandez
+- built and uploaded the cookiecutter template
+- initialise the GitHub repo
+- Set up rules for the repo 
+
+### Phase 2
+Anjan Kumar Basavaraj Gurudatt 
+-
+Joshua Nevin Chandrasekar
+-
+Sakshi Gorkhali
+-
+Angel Hernandez 
+- Set up logging with Rich.
+- helped clean up the README after phase 1.
 
 ## References
 
