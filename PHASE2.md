@@ -272,6 +272,7 @@ Each run logs both ranking and prediction metrics, along with useful diagnostics
 - `training_time`: time taken to train the model
 - `tp`, `fp`, `fn`: top-k diagnostic counts
 - `precision_distribution`, `recall_distribution`: distributions used to inspect run behavior
+![sweeplogs](sweeplogs.png)
 
 - [ ] **Parameter Logging**: Log all hyperparameters and configuration values
 We logged every important training and evaluation setting so each experiment can be reproduced exactly.
@@ -279,6 +280,7 @@ We logged every important training and evaluation setting so each experiment can
 - Hyperparameters: `n_factors`, `n_epochs`, `lr_all`, `reg_all`
 - Training settings: `random_state`, `test_size`, `k`, and the relevance threshold used for top-k evaluation
 - Dataset metadata: `num_users`, `num_movies`, `num_ratings`, `rating_column`, `rating_scale_min`, `rating_scale_max`, and whether target-rating preprocessing was used
+![Wandbchart](wandbchart.png)
 
 These values are passed into `wandb.init(config=...)` in the training script
 
@@ -295,6 +297,7 @@ We compared multiple experiments using the W&B Runs table.
 - Primary sort: `precision_at_10` in descending order
 - Secondary checks: `rmse`, then `training_time`
 - Comparison columns used in W&B: `precision_at_10`, `rmse`, `mae`, `training_time`
+![wandb_runs_sorted_precision_at_10](wandb_runs_sorted_precision_at_10.png)
 
 This comparison was done across the sweep runs, which explored different combinations of `n_factors`, `n_epochs`, `lr_all`, and `reg_all`.
 - [ ] **Visualization**: Generate performance comparison charts/plots
