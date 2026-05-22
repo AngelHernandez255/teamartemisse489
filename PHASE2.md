@@ -62,6 +62,7 @@ Phase 2 focuses on scaling and operationalizing TeamArtemisSE489 by implementing
 - [ ] **Logger Setup**: Configure Python logger with appropriate handlers and formatters
   - OR **Rich Library Setup**: Use rich for enhanced console output and logging
 - [ ] **Log Levels**: Implement and use DEBUG, INFO, WARNING, ERROR appropriately
+<img width="1054" height="395" alt="image" src="https://github.com/user-attachments/assets/7617b86f-efa5-4926-8765-b62e8ee2a093" />
 - [ ] **Log Messages**: Add informative log messages at key points in code
 - [ ] **Training Log Example**: Document and include sample training log output
 - [ ] **Inference Log Example**: Document and include sample inference log output
