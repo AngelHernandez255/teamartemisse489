@@ -220,14 +220,14 @@ The `-it` flags keep stdin open so `pdb` can accept keystrokes interactively.
 
 ## 3. Profiling & Optimization
 
-- [ ] **CPU Profiling**: Use cProfile to profile training and inference
-- [ ] **Memory Profiling**: Profile memory usage with memory_profiler or similar
-- [ ] **GPU Profiling (if applicable)**: Use PyTorch Profiler or similar for GPU workloads
-- [ ] **Profiling Results**: Document baseline profiling results and bottlenecks identified
-- [ ] **Optimization 1**: Implement and measure optimization (e.g., vectorization, caching)
-- [ ] **Optimization 2**: Implement and measure additional optimization
-- [ ] **Performance Benchmarks**: Document before/after performance metrics
-- [ ] **Optimization Documentation**: Explain each optimization and its impact
+- [x] **CPU Profiling**: Use cProfile to profile training and inference
+- [x] **Memory Profiling**: Profile memory usage with memory_profiler or similar
+- [x] **GPU Profiling (if applicable)**: Use PyTorch Profiler or similar for GPU workloads
+- [x] **Profiling Results**: Document baseline profiling results and bottlenecks identified
+- [x] **Optimization 1**: Implement and measure optimization (e.g., vectorization, caching)
+- [x] **Optimization 2**: Implement and measure additional optimization
+- [x] **Performance Benchmarks**: Document before/after performance metrics
+- [x] **Optimization Documentation**: Explain each optimization and its impact
 
 ---
 
@@ -263,7 +263,7 @@ The sweep was configured as a grid search over these hyperparameters:
 
 The sweep objective was `precision_at_10`, because the main goal of the project is to rank the most relevant items near the top of the recommendation list.
 
-- [ ] **Metric Logging**: Log training/validation metrics for each experiment
+- [x] **Metric Logging**: Log training/validation metrics for each experiment
 Each run logs both ranking and prediction metrics, along with useful diagnostics.
 - `precision_at_10`: primary ranking metric
 - `recall_at_10`: recall for the top-10 recommendation list
@@ -273,7 +273,7 @@ Each run logs both ranking and prediction metrics, along with useful diagnostics
 - `tp`, `fp`, `fn`: top-k diagnostic counts
 - `precision_distribution`, `recall_distribution`: distributions used to inspect run behavior
 
-- [ ] **Parameter Logging**: Log all hyperparameters and configuration values
+- [x] **Parameter Logging**: Log all hyperparameters and configuration values
 We logged every important training and evaluation setting so each experiment can be reproduced exactly.
 
 - Hyperparameters: `n_factors`, `n_epochs`, `lr_all`, `reg_all`
@@ -282,7 +282,7 @@ We logged every important training and evaluation setting so each experiment can
 
 These values are passed into `wandb.init(config=...)` in the training script
 
-- [ ] **Model Artifact Logging**: Save model checkpoints and artifacts to tracking system
+- [x] **Model Artifact Logging**: Save model checkpoints and artifacts to tracking system
 The model and evaluation outputs were saved locally and tracked as artifacts in W&B.
 - Local artifact files:
   - `models/svd.joblib`
@@ -290,16 +290,16 @@ The model and evaluation outputs were saved locally and tracked as artifacts in 
 
 The model is saved locally, then attached to W&B as an artifact so the final run can be traced back to the exact trained model.
 
-- [ ] **Experiment Comparison**: Create comparison of at least 3 different experiments
+- [x] **Experiment Comparison**: Create comparison of at least 3 different experiments
 We compared multiple experiments using the W&B Runs table.
 - Primary sort: `precision_at_10` in descending order
 - Secondary checks: `rmse`, then `training_time`
 - Comparison columns used in W&B: `precision_at_10`, `rmse`, `mae`, `training_time`
 
 This comparison was done across the sweep runs, which explored different combinations of `n_factors`, `n_epochs`, `lr_all`, and `reg_all`.
-- [ ] **Visualization**: Generate performance comparison charts/plots
+- [x] **Visualization**: Generate performance comparison charts/plots
 
-- [ ] **Best Model Selection**: Document criteria and process for selecting best model from experiments
+- [x] **Best Model Selection**: Document criteria and process for selecting best model from experiments
 1. Sort the W&B runs table by `precision_at_10`
 2. Check the top runs for `rmse` and `training_time`
 3. Confirm the selected run has the correct artifact and summary metrics
@@ -375,7 +375,7 @@ The log rotation is set at [logging config](src/teamartemisse489/logging_config.
 - [x] **Hydra Setup**: Install and configure Hydra for config management
 - [x] **Config Files**: Create YAML config files for train/eval/inference configurations
 - [x] **Config Structure**: Organize configs with appropriate hierarchy (base, model, data, etc.)
-- [ ] **Config Example 1**: Create and document sample training config
+- [x] **Config Example 1**: Create and document sample training config
 - [x] **Config Example 2**: Create and document alternative config (different hyperparameters)
 - [x] **Config Validation**: Implement config validation and schema checking
 - [x] **Override Documentation**: Document how to override config values from command line
@@ -386,18 +386,18 @@ The log rotation is set at [logging config](src/teamartemisse489/logging_config.
 ## 7. Documentation & Repository Updates
 
 - [x] **README Update**: Update README to include:
-  - [ ] Containerization section with Docker usage
-  - [ ] Debugging and profiling guide
-  - [ ] Experiment tracking setup instructions
+  - [x] Containerization section with Docker usage
+  - [x] Debugging and profiling guide
+  - [x] Experiment tracking setup instructions
   - [x] Configuration management guide
-  - [ ] Logging usage examples
-- [ ] **Architecture Documentation**: Document system architecture with diagrams
-- [ ] **Setup Guide**: Update setup guide to include all Phase 2 tools
-- [ ] **Examples**: Add examples of running with different configurations
-- [ ] **Tool Integration**: Document how all tools work together
-- [ ] **Troubleshooting**: Add troubleshooting section for common issues
-- [ ] **Performance Guide**: Document how to profile and optimize
-- [ ] **Version Compatibility**: Document version requirements for all tools
+  - [x] Logging usage examples
+- [x] **Architecture Documentation**: Document system architecture with diagrams
+- [x] **Setup Guide**: Update setup guide to include all Phase 2 tools
+- [x] **Examples**: Add examples of running with different configurations
+- [x] **Tool Integration**: Document how all tools work together
+- [x] **Troubleshooting**: Add troubleshooting section for common issues
+- [x] **Performance Guide**: Document how to profile and optimize
+- [x] **Version Compatibility**: Document version requirements for all tools
 
 ---
 
