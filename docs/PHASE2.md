@@ -142,9 +142,9 @@ Integrated Hydra for centralized and modular configuration management across the
 
 This demonstrates successful Hydra configuration loading, model training, and experiment tracking integration.
 
-![Hydra Training Output](docs/screenshots/mlops_hydra.png)
-![Hydra Training Output](docs/screenshots/hydra2.png)
-![Hydra Training Output](docs/screenshots/hydra3.png)
+![Hydra Training Output](screenshots/mlops_hydra.png)
+![Hydra Training Output](screenshots/hydra2.png)
+![Hydra Training Output](screenshots/hydra3.png)
 ---
 
 ### Configuration Validation Example
