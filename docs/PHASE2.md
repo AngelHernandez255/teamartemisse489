@@ -27,8 +27,42 @@ We built the recommendation pipeline around a Surprise-based SVD model. The base
 - Baseline performance: the baseline notebook showed that SVD had the best initial performance among the candidate models, so we used it as the main model for hyperparameter tuning through the W&B sweep
 
 ### 2. Experiment Tracking
-- All experiments logged and documented
-- MLflow experiment tracking configured
+We integrated Weights & Biases (W&B) into our training workflow to track hyperparameters, evaluation metrics, dataset metadata, and the trained model artifact making it easy to compare runs, reproduce the final configuration, and understand how the best model was selected.
+
+W&B was used in three ways:
+- Run tracking: each training run logged its configuration, metrics, and summary values
+- Sweep management: the grid sweep explored multiple SVD configurations in a structured way
+- Artifact tracking: the trained model was saved and logged as a W&B artifact so the best version can be traced later
+
+In each run, we tracked:
+- Hyperparameters: `n_factors`, `n_epochs`, `lr_all`, `reg_all`
+- Training settings: `random_state`, `test_size`, `k`, and the relevance threshold used for top-k evaluation
+- Dataset metadata: `num_users`, `num_movies`, `num_ratings`, `rating_column`, `rating_scale_min`, `rating_scale_max`, and whether target-rating preprocessing was used
+- Evaluation metrics: `precision_at_10`, `recall_at_10`, `rmse`, `mae`, and `training_time`
+- Diagnostic distributions: `precision_distribution`, `recall_distribution`, and the top-k counts `tp`, `fp`, `fn`
+- Artifacts: the trained model file `models/svd.joblib` and the metrics snapshot `models/svd_metrics.json`
+
+The sweep was configured as a grid search over the SVD hyperparameters:
+- `n_factors`: latent factor size
+- `n_epochs`: number of training epochs
+- `lr_all`: learning rate
+- `reg_all`: regularization strength
+
+The sweep objective was to maximize `precision_at_10`, since our main goal was to improve the quality of the top-10 recommendations. We used `rmse` and `training_time` as secondary comparison signals when choosing the final run.
+
+Setup used:
+- `wandb login`
+- `python -m teamartemisse489.train_model`
+- `wandb sweep sweep.yaml`
+- `wandb agent sakshigorkhaliprojects/Team-Artemisse489-Recommender/3zogxl0j`
+
+Team project:
+- https://wandb.ai/sakshigorkhaliprojects/Team-Artemisse489-Recommender
+
+Shared report:
+- https://api.wandb.ai/links/sakshigorkhaliprojects/f0tplq6e
+
+![Runs table from W&B](../src/teamartemisse489/visualization/wandb_runs_sorted_precision_at_10.png)
 
 ### 2. Debugging Practices
 - Debugger tools: `pdb`, VS Code Python Debugger, and the trainer's `--debug`
