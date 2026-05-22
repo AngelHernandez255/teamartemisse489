@@ -134,6 +134,37 @@ Shared W&B report:
 - Configuration documentation
 
 
+## Hydra Configuration Management
+
+Integrated Hydra for centralized and modular configuration management across the MLOps pipeline.
+
+### Successful Hydra Training Run
+
+This demonstrates successful Hydra configuration loading, model training, and experiment tracking integration.
+
+![Hydra Training Output](docs/screenshots/mlops_hydra.png)
+![Hydra Training Output](docs/screenshots/hydra2.png)
+![Hydra Training Output](docs/screenshots/hydra3.png)
+---
+
+### Configuration Validation Example
+
+The system validates runtime configuration values and prevents invalid experiment execution.
+
+![Hydra Validation Output](docs/screenshots/config_validation.png)
+
+---
+
+### Configuration Version Control
+
+All Hydra configuration files were version-controlled alongside the application source code using Git and GitHub collaborative workflows.
+
+Implemented:
+- feature branch workflow
+- pull requests
+- merge conflict resolution
+- synchronized configuration updates with training pipeline
+
 
 ## Key Results
 
