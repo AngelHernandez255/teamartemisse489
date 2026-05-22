@@ -7,26 +7,214 @@ Phase 2 focuses on scaling and operationalizing TeamArtemisSE489 by implementing
 
 ## 1. Containerization
 
-- [x] **Dockerfile Creation**: Build Dockerfile for model training and inference
-- [x] **Base Image Selection**: Choose appropriate base image (python:3.x, nvidia/cuda, etc.)
-- [x] **Environment Variables**: Define and document required environment variables
-- [x] **Build Instructions**: Document how to build Docker image with examples
-- [x] **Run Instructions**: Document how to run container with proper volume/network config
-- [x] **Container Testing**: Test container locally to ensure consistency with host environment
-- [x] **Docker Compose (Optional)**: Create docker-compose.yml for multi-service setups
-- [x] **Environment Consistency**: Verify that containerized training produces identical results to local training
+### 1.1 Dockerfile
+
+- [x] **Dockerfile Creation**: [`dockerfiles/Dockerfile`](dockerfiles/Dockerfile)
+- [x] **Base Image**: `python:3.11-slim-bookworm` — the course-standard image, minimal footprint, no EOL risk
+- [x] **Environment Variables**: `PYTHONUNBUFFERED=1`, `PYTHONDONTWRITEBYTECODE=1`, `PIP_DISABLE_PIP_VERSION_CHECK=1`
+- [x] **Build & Run documented in README**
+- [x] **Docker Compose**: [`docker-compose.yaml`](docker-compose.yaml)
+- [x] **Environment Consistency**: all Python dependencies pinned in `requirements.txt`
+
+**How the image is structured:**
+
+```
+FROM python:3.11-slim-bookworm
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y build-essential gcc g++ && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY requirements.txt pyproject.toml ./
+
+RUN pip install --no-cache-dir uv==0.5.30 && \
+    uv pip install -r requirements.txt --system
+
+COPY src/ scripts/ data/ models/ reports/ ./
+
+RUN pip install --no-cache-dir . --no-deps
+
+ENTRYPOINT ["python", "-u", "-m", "teamartemisse489.train_model"]
+```
+
+`uv pip install` is used instead of plain `pip` for ~10× faster dependency resolution during `docker build`. The `--system` flag installs into the container's system Python rather than a virtual environment. The entrypoint runs the package training module directly so Hydra config overrides can be passed as arguments after the image name.
+
+### 1.2 Build & Run
+
+**Prerequisites:** Install [Docker Desktop](https://docs.docker.com/get-docker/).
+
+**Build the image:**
+
+```bash
+docker build -t teamartemisse489:latest .
+# or via Make:
+make docker_build
+```
+
+**Run training (models persist on the host via volume mount):**
+
+```bash
+# macOS / Linux
+docker run -it --rm -v ${PWD}/models:/app/models teamartemisse489:latest
+
+# Windows (cmd)
+docker run -it --rm -v %cd%/models:/app/models teamartemisse489:latest
+
+# or via Make:
+make docker_run
+```
+
+**Pass Hydra config overrides:**
+
+```bash
+docker run -it --rm -v ${PWD}/models:/app/models teamartemisse489:latest \
+    model.n_factors=200 training.n_epochs=30
+```
+
+**Docker Compose (mounts both data and models):**
+
+```bash
+docker compose up --build
+```
+
+**Keep monitoring logs on the host:**
+
+```bash
+docker run -it --rm \
+    -v ${PWD}/models:/app/models \
+    -v ${PWD}/logs:/app/logs \
+    --entrypoint python teamartemisse489:latest \
+    scripts/monitor_training.py --output logs/system_metrics.csv \
+    -- python -m teamartemisse489.train_model
+```
+
+### 1.3 Environment Consistency
+
+All runtime dependencies are pinned in [`requirements.txt`](requirements.txt) with exact version numbers (e.g., `numpy==1.26.4`, `pandas==2.2.2`, `scikit-surprise==1.1.4`). The same file is used both locally and inside the container, so `docker build` always resolves the identical dependency graph regardless of when or where it runs. The `pyproject.toml` declares the package metadata and entry points; `pip install . --no-deps` at the end of the build registers the `teamartemisse489` package without re-resolving anything already installed by `uv`.
 
 ---
 
 ## 2. Monitoring & Debugging
 
-- [x] **Debugging Tools**: Set up pdb/ipdb for interactive debugging
-- [x] **Debugging Documentation**: Document how to debug in containerized environment
-- [x] **Debug Scenario 1**: Create example scenario and solution document for [specific problem]
-- [x] **Debug Scenario 2**: Create example scenario and solution document for [specific problem]
-- [x] **Logging for Debugging**: Implement detailed logging at critical points in code
-- [x] **Model Assertion Checks**: Add assertions to catch data/model anomalies early
-- [x] **Training Validation**: Implement sanity checks (NaN detection, shape validation, etc.)
+### 2.1 Monitoring
+
+**Tool chosen: `psutil`-based CSV monitor** (`scripts/monitor_training.py` + `src/teamartemisse489/monitoring.py`)
+
+We chose a lightweight `psutil` script over MLflow system metrics or Prometheus because it works identically locally and inside Docker without requiring a running server, and it produces a plain CSV that is easy to inspect in a spreadsheet or plot with pandas. W&B system metrics are already captured automatically during experiment tracking runs (see Section 4); the `psutil` monitor supplements that with a persistent local record tied to each training process.
+
+**Key metrics captured (written to `logs/system_metrics.csv`):**
+
+| Column | What it tells you |
+|---|---|
+| `system_cpu_percent` | Overall machine CPU load — spikes indicate compute-bound phases |
+| `system_memory_percent` | System-wide RAM pressure |
+| `system_memory_used_mb` | Absolute RAM consumption in MB |
+| `process_memory_rss_mb` | Resident set size of the training process — watch for leaks |
+| `process_cpu_percent` | CPU utilization of the training process alone |
+| `process_threads` | Number of active threads (useful to verify parallelism) |
+| `elapsed_seconds` | Wall-clock time since monitoring started |
+| `phase` | `start` / `sample` / `end` — marks lifecycle events |
+
+**Running the monitor:**
+
+```bash
+# Wrap the package entrypoint
+python scripts/monitor_training.py --output logs/system_metrics.csv \
+    -- python -m teamartemisse489.train_model
+
+# Wrap the baseline train script directly
+python scripts/monitor_training.py --output logs/system_metrics.csv \
+    -- python models/train.py
+
+# Adjust sample frequency (default: every 2 s)
+python scripts/monitor_training.py --interval 5 --output logs/system_metrics.csv \
+    -- python -m teamartemisse489.train_model
+```
+
+**Interpreting results** — load the CSV with pandas after a run:
+
+```python
+import pandas as pd
+df = pd.read_csv("logs/system_metrics.csv")
+df[["elapsed_seconds", "system_cpu_percent", "system_memory_used_mb",
+    "process_memory_rss_mb"]].plot(x="elapsed_seconds")
+```
+
+High `system_cpu_percent` during SVD matrix factorization is expected. A steadily growing `process_memory_rss_mb` with no plateau would indicate a memory leak in the data loading pipeline.
+
+**Implementation:** The `ResourceMonitor` class in [`src/teamartemisse489/monitoring.py`](src/teamartemisse489/monitoring.py) runs sampling in a daemon thread so it never blocks the training process. It opens the output CSV in append mode with a header guard, meaning multiple runs accumulate in the same file and can be compared post-hoc. The context manager interface (`with ResourceMonitor(...):`) guarantees a final `end` sample is written even if the training process raises an exception.
+
+### 2.2 Debugging Practices
+
+Debugging tools used: Python's built-in `pdb` (via `breakpoint()`), the `--debug` CLI flag in `models/train.py`, and explicit pre-training validation checks that fail fast with actionable error messages.
+
+**Validation checks (in `models/train.py: validate_training_data`):**
+
+Before the Surprise `Dataset` is constructed the trainer asserts:
+1. The processed parquet file exists at the expected path.
+2. The dataframe is non-empty.
+3. All three required columns (`userId`, `movieId`, `rating`) are present.
+4. None of the required columns contain null values.
+5. The `rating` column is numeric.
+6. All ratings are in the valid `[1, 5]` range.
+
+Each check raises a specific `ValueError` or `TypeError` with a message that names the problem directly, so failures are self-diagnosing without needing a debugger.
+
+**Using the `--debug` flag:**
+
+```bash
+python models/train.py --debug
+```
+
+This calls `breakpoint()` immediately after validation passes, dropping into `pdb` while `df` is in scope:
+
+```
+(Pdb) p df.shape
+(10000, 3)
+(Pdb) p df.dtypes
+userId      int64
+movieId     int64
+rating    float64
+dtype: object
+(Pdb) p df["rating"].describe()
+count    10000.000000
+mean         3.541200
+...
+(Pdb) c   # continue to training
+```
+
+**Debugging inside Docker:**
+
+```bash
+docker run -it --rm \
+    -v ${PWD}/models:/app/models \
+    --entrypoint python teamartemisse489:latest \
+    models/train.py --debug
+```
+
+The `-it` flags keep stdin open so `pdb` can accept keystrokes interactively.
+
+**Debug Scenario 1 — missing required columns:**
+
+*Symptom:* `ValueError: Training data is missing columns: ['rating']`
+
+*Cause:* The preprocessing step wrote a parquet file with a column named `score` instead of `rating`.
+
+*Resolution:* Inspect `df.columns` at the `pdb` prompt, then fix the rename in `src/teamartemisse489/data/make_dataset.py`. The validation check surfaces this immediately rather than letting it propagate to a cryptic Surprise internal error.
+
+**Debug Scenario 2 — ratings outside the 1–5 range:**
+
+*Symptom:* `ValueError: Training data ratings must be between 1 and 5. Example invalid values: [0.5, 6.0, ...]`
+
+*Cause:* The raw Rotten Tomatoes dataset uses a 0–10 scale for some review sources; a normalization step was applied inconsistently.
+
+*Resolution:* At the `pdb` prompt, run `p df.loc[~df["rating"].between(1, 5), "rating"].value_counts()` to see the distribution of out-of-range values, then update the normalization logic in the data pipeline. The `validate_training_data` function prints up to five example invalid values to guide the fix without requiring interactive debugging at all.
 
 ---
 
