@@ -90,6 +90,7 @@ p df[["userId", "movieId", "rating"]].head()
 p df["rating"].describe()
 ```
 
+
 Scenario 1: if `userId`, `movieId`, or `rating` is missing, training raises a
 clear validation error before Surprise receives the dataframe. Inspect
 `df.columns` and fix the data preparation step.
@@ -99,10 +100,32 @@ clear validation error before fitting. Inspect `df["rating"].describe()` and
 the invalid rows to correct preprocessing.
 
 ### 3. Performance Analysis
-- Model comparison results
-- Hyperparameter sensitivity analysis
-- Feature importance analysis
-- Error analysis and patterns
+We used the baseline notebook and the W&B sweep results together to evaluate model quality and choose the final SVD configuration. The first comparison happened in [notebooks/02_Baseline_Models.ipynb](notebooks/02_Baseline_Models.ipynb), where we tested several candidate recommenders and compared them on both prediction and ranking behavior. SVD gave the strongest initial balance of performance, stability, and reproducibility, so it became the model we tuned further with the W&B sweep.
+
+The main selection criterion was `precision_at_10`, because our goal is to rank the most relevant items near the top of the recommendation list. We used `rmse` and `training_time` as secondary criteria to make sure the final model was still accurate on rating prediction and efficient enough to train repeatedly during sweep experiments.
+
+- Model comparison results: SVD outperformed the other baseline candidates for the top-k ranking objective
+- Hyperparameter sensitivity: the sweep showed that larger latent dimensionality and more epochs generally improved ranking quality within the tested search space
+- Best-run evidence: the sweep table screenshot below is the reference used to verify `n_factors=100`, `n_epochs=30`, `lr_all=0.01`, `reg_all=0.1`
+- Comparison columns used in W&B: `precision_at_10`, `rmse`, `mae`, and `training_time`
+
+How the best hyperparameters were selected:
+- We opened the W&B runs table and sorted by `precision_at_10` in descending order
+- We compared the top runs against `rmse`
+
+Best model results: SVC
+- `n_factors=100`
+- `n_epochs=30`
+- `lr_all=0.01`
+- `reg_all=0.1`
+- `precision_at_10=0.7687069`
+- `recall_at_10=0.7790209`
+- `rmse=1.0819889`
+- `mae=0.863545`
+- `training_time=5.15s`
+
+Shared W&B report:
+- https://api.wandb.ai/links/sakshigorkhaliprojects/f0tplq6e
 
 ### 4. Model Artifacts
 - Best model saved and versioned
@@ -110,14 +133,7 @@ the invalid rows to correct preprocessing.
 - Training curves and visualizations
 - Configuration documentation
 
-## Model Selection
 
-*To be filled in during Phase 2*
-
-### Chosen Model
-- Model Type: 
-- Best Hyperparameters: 
-- Performance Metrics: 
 
 ## Key Results
 
