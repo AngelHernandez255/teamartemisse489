@@ -61,6 +61,8 @@ Phase 2 focuses on scaling and operationalizing TeamArtemisSE489 by implementing
 
 - [ ] **Logger Setup**: Configure Python logger with appropriate handlers and formatters
   - OR **Rich Library Setup**: Use rich for enhanced console output and logging
+used rich within the [logging config](src/teamartemisse489/logging_config.py) file 
+
 - [ ] **Log Levels**: Implement and use DEBUG, INFO, WARNING, ERROR appropriately
 <img width="1059" height="153" alt="image" src="https://github.com/user-attachments/assets/ab670bf6-ecb3-499d-8c67-766f3a0becb9" />
 
@@ -70,6 +72,7 @@ Phase 2 focuses on scaling and operationalizing TeamArtemisSE489 by implementing
 - [ ] **Error Logging**: Implement comprehensive error logging with context
 - [ ] **Performance Logging**: Log timing information for performance analysis
 - [ ] **Log Rotation**: Configure log rotation to prevent disk space issues
+The log rotation is set at [logging config](src/teamartemisse489/logging_config.py) in the JSON formatter, declared at line 20. Each one has 10 mb of max space, and up to 8 are backed up.
 
 ---
 
