@@ -233,15 +233,94 @@ The `-it` flags keep stdin open so `pdb` can accept keystrokes interactively.
 
 ## 4. Experiment Management & Tracking
 
-- [ ] **MLflow Setup**: Initialize MLflow tracking server and client configuration
-  - OR **Weights & Biases Setup**: Initialize W&B project and team workspace
+**Weights & Biases Setup**: Initialize W&B project and team workspace
+This project uses Weights & Biases (W&B) as the experiment tracking system for Phase 2. W&B was added so every training run records its configuration, evaluation metrics, dataset metadata, and saved model artifact in one place, making it easier to compare experiments and reproduce the final model selection.
+
+### Setup
+
+We configured W&B in the training workflow and used a grid sweep to compare SVD hyperparameters.
+
+- Training entrypoint: `src/teamartemisse489/train_model.py`
+- Sweep config: `src/teamartemisse489/sweep.yaml`
+- Team project: [https://wandb.ai/sakshigorkhaliprojects/Team-Artemisse489-Recommender](https://wandb.ai/sakshigorkhaliprojects/Team-Artemisse489-Recommender)
+- Shared report: [https://api.wandb.ai/links/sakshigorkhaliprojects/f0tplq6e](https://api.wandb.ai/links/sakshigorkhaliprojects/f0tplq6e)
+
+Setup:
+
+```bash
+wandb login
+python -m teamartemisse489.train_model
+cd src/teamartemisse489
+wandb sweep sweep.yaml
+wandb agent sakshigorkhaliprojects/Team-Artemisse489-Recommender/3zogxl0j
+```
+
+The sweep was configured as a grid search over these hyperparameters:
+- `n_factors`: latent factor size
+- `n_epochs`: number of training epochs
+- `lr_all`: learning rate
+- `reg_all`: regularization strength
+
+The sweep objective was `precision_at_10`, because the main goal of the project is to rank the most relevant items near the top of the recommendation list.
+
 - [ ] **Metric Logging**: Log training/validation metrics for each experiment
+Each run logs both ranking and prediction metrics, along with useful diagnostics.
+- `precision_at_10`: primary ranking metric
+- `recall_at_10`: recall for the top-10 recommendation list
+- `rmse`: rating prediction error
+- `mae`: mean absolute prediction error
+- `training_time`: time taken to train the model
+- `tp`, `fp`, `fn`: top-k diagnostic counts
+- `precision_distribution`, `recall_distribution`: distributions used to inspect run behavior
+
 - [ ] **Parameter Logging**: Log all hyperparameters and configuration values
+We logged every important training and evaluation setting so each experiment can be reproduced exactly.
+
+- Hyperparameters: `n_factors`, `n_epochs`, `lr_all`, `reg_all`
+- Training settings: `random_state`, `test_size`, `k`, and the relevance threshold used for top-k evaluation
+- Dataset metadata: `num_users`, `num_movies`, `num_ratings`, `rating_column`, `rating_scale_min`, `rating_scale_max`, and whether target-rating preprocessing was used
+
+These values are passed into `wandb.init(config=...)` in the training script
+
 - [ ] **Model Artifact Logging**: Save model checkpoints and artifacts to tracking system
+The model and evaluation outputs were saved locally and tracked as artifacts in W&B.
+- Local artifact files:
+  - `models/svd.joblib`
+  - `models/svd_metrics.json`
+- Recommended reproducibility file:
+  - `models/svd_metadata.json`
+
+The model is saved locally, then attached to W&B as an artifact so the final run can be traced back to the exact trained model.
+
 - [ ] **Experiment Comparison**: Create comparison of at least 3 different experiments
+We compared multiple experiments using the W&B Runs table.
+- Primary sort: `precision_at_10` in descending order
+- Secondary checks: `rmse`, then `training_time`
+- Comparison columns used in W&B: `precision_at_10`, `rmse`, `mae`, `training_time`
+
+This comparison was done across the sweep runs, which explored different combinations of `n_factors`, `n_epochs`, `lr_all`, and `reg_all`.
 - [ ] **Visualization**: Generate performance comparison charts/plots
+
 - [ ] **Best Model Selection**: Document criteria and process for selecting best model from experiments
-- [ ] **Experiment Documentation**: Create table summarizing all experiments with results
+1. Sort the W&B runs table by `precision_at_10`
+2. Check the top runs for `rmse` and `training_time`
+3. Confirm the selected run has the correct artifact and summary metrics
+
+Final selected hyperparameters:
+
+- `n_factors=100`
+- `n_epochs=30`
+- `lr_all=0.01`
+- `reg_all=0.1`
+
+Final selected metrics:
+
+- `precision_at_10=0.7687069`
+- `recall_at_10=0.7790209`
+- `rmse=1.0819889`
+- `mae=0.863545`
+- `training_time=5.15s`
+
 
 ---
 
