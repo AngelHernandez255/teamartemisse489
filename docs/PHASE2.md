@@ -151,7 +151,7 @@ This demonstrates successful Hydra configuration loading, model training, and ex
 
 The system validates runtime configuration values and prevents invalid experiment execution.
 
-![Hydra Validation Output](docs/screenshots/config_validation.png)
+![Hydra Validation Output](screenshots/config_validation.png)
 
 ---
 
