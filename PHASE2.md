@@ -247,21 +247,47 @@ The `-it` flags keep stdin open so `pdb` can accept keystrokes interactively.
 
 ## 5. Application & Experiment Logging
 
-- [ ] **Logger Setup**: Configure Python logger with appropriate handlers and formatters
+- [x] **Logger Setup**: Configure Python logger with appropriate handlers and formatters
   - OR **Rich Library Setup**: Use rich for enhanced console output and logging
 
 used rich within the [logging config](src/teamartemisse489/logging_config.py) file 
 
-- [ ] **Log Levels**: Implement and use DEBUG, INFO, WARNING, ERROR appropriately
+- [x] **Log Levels**: Implement and use DEBUG, INFO, WARNING, ERROR appropriately
 
 <img width="1059" height="153" alt="image" src="https://github.com/user-attachments/assets/ab670bf6-ecb3-499d-8c67-766f3a0becb9" />
 
-- [ ] **Log Messages**: Add informative log messages at key points in code
-- [ ] **Training Log Example**: Document and include sample training log output
-- [ ] **Inference Log Example**: Document and include sample inference log output
-- [ ] **Error Logging**: Implement comprehensive error logging with context
-- [ ] **Performance Logging**: Log timing information for performance analysis
-- [ ] **Log Rotation**: Configure log rotation to prevent disk space issues
+Each of these files uses logs in some way, shape, or form.
+
+ [monitor_training](scripts/monitor_training.py)
+ [make_dataset](src/teamartemisse489/make_dataset.py)
+ [predict_model](src/teamartemisse489/predict_model.py)
+ [train_model](src/teamartemisse489/train_model.py)
+ 
+- [x] **Log Messages**: Add informative log messages at key points in code
+
+Most logging data is stored inside the logs directory in src/teamartemisse489/logs
+Sometimes the log files get ignored, regardless of the gitkeep or removing .logs from gitignore. 
+whether or not we are supposed to include them or not due to their potential size (10 mb each with up to 8 backups for previous versions)
+ 
+- [x] **Training Log Example**: Document and include sample training log output
+- [x] **Inference Log Example**: Document and include sample inference log output
+- [x] **Error Logging**: Implement comprehensive error logging with context
+
+Examples of error logging are found in  [monitor_training](scripts/monitor_training.py)
+...
+    if not command:
+        logger.error(
+            "No command provided. Example: "
+            "python scripts/monitor_training.py -- python models/train.py"
+        )
+        return 2
+...
+
+- [x] **Performance Logging**: Log timing information for performance analysis
+
+performance was logged in logs/system_metrics.csv rather than in the regular logs.
+
+- [x] **Log Rotation**: Configure log rotation to prevent disk space issues
 
 The log rotation is set at [logging config](src/teamartemisse489/logging_config.py) in the JSON formatter, declared at line 20. Each one has 10 mb of max space, and up to 8 are backed up.
 
