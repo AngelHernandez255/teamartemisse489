@@ -14,10 +14,17 @@ This phase focuses on building, training, and validating machine learning models
 ## Deliverables
 
 ### 1. Model Implementation
-- Model architecture defined
-- Training pipeline implemented
-- Evaluation metrics chosen
-- Baseline performance established
+We built the recommendation pipeline around a Surprise-based SVD model. The baseline comparison was first explored in [notebooks/02_Baseline_Models.ipynb](notebooks/02_Baseline_Models.ipynb), where we evaluated several candidate recommendation methods and compared them on both ranking and prediction quality. SVD gave the strongest initial balance of performance and reproducibility, so it became the model we carried forward into optimizing, hyperparameter tuning and final evaluation. The training pipeline itself is implemented in [src/teamartemisse489/train_model.py](src/teamartemisse489/train_model.py), which handles data preparation, train/test splitting, top-k evaluation, metric logging, and artifact saving so the model can be retrained and compared consistently.
+
+- Model architecture: collaborative filtering with SVD latent factors
+- Training pipeline: end-to-end script in [src/teamartemisse489/train_model.py](src/teamartemisse489/train_model.py)
+- Evaluation metrics:
+  - `precision_at_10`: measures how many of the top 10 recommended items are actually relevant; this is our main ranking metric
+  - `recall_at_10`: measures how many relevant items were recovered in the top 10; useful for checking whether the model is missing too many good recommendations
+  - `rmse`: measures average prediction error on rating values; this helps judge how well the model estimates explicit ratings
+  - `mae`: similar to RMSE but less sensitive to large errors; useful as a second prediction-quality check
+  - `training_time`: measures how long the model takes to train; important for reproducibility and sweep efficiency
+- Baseline performance: the baseline notebook showed that SVD had the best initial performance among the candidate models, so we used it as the main model for hyperparameter tuning through the W&B sweep
 
 ### 2. Experiment Tracking
 - All experiments logged and documented
