@@ -236,14 +236,13 @@ Angel Hernandez
 
 ### Phase 2
 Anjan Kumar Basavaraj Gurudatt 
--
+- config management
 Joshua Nevin Chandrasekar
--
+- containerization and monitoring
 Sakshi Gorkhali
--
+- performance tracking and experiment tracking
 Angel Hernandez 
-- Set up logging with Rich.
-- helped clean up the README after phase 1.
+- Set up logging with Rich and cleaning up the GitHub documentation.
 
 ## References
 
