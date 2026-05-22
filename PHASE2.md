@@ -240,8 +240,8 @@ This project uses Weights & Biases (W&B) as the experiment tracking system for P
 
 We configured W&B in the training workflow and used a grid sweep to compare SVD hyperparameters.
 
-- Training entrypoint: `src/teamartemisse489/train_model.py`
-- Sweep config: `src/teamartemisse489/sweep.yaml`
+- Training entrypoint: [`src/teamartemisse489/train_model.py`] (src/teamartemisse489/train_model.py)
+- Sweep config: [`src/teamartemisse489/sweep.yaml`] (src/teamartemisse489/sweep.yaml)
 - Team project: [https://wandb.ai/sakshigorkhaliprojects/Team-Artemisse489-Recommender](https://wandb.ai/sakshigorkhaliprojects/Team-Artemisse489-Recommender)
 - Shared report: [https://api.wandb.ai/links/sakshigorkhaliprojects/f0tplq6e](https://api.wandb.ai/links/sakshigorkhaliprojects/f0tplq6e)
 
@@ -287,8 +287,6 @@ The model and evaluation outputs were saved locally and tracked as artifacts in 
 - Local artifact files:
   - `models/svd.joblib`
   - `models/svd_metrics.json`
-- Recommended reproducibility file:
-  - `models/svd_metadata.json`
 
 The model is saved locally, then attached to W&B as an artifact so the final run can be traced back to the exact trained model.
 
