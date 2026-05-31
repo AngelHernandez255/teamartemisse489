@@ -235,14 +235,10 @@ Angel Hernandez
 - Set up rules for the repo 
 
 ### Phase 2
-Anjan Kumar Basavaraj Gurudatt 
-- config management
-Joshua Nevin Chandrasekar
-- containerization and monitoring
-Sakshi Gorkhali
-- performance tracking and experiment tracking
-Angel Hernandez 
-- Set up logging with Rich and cleaning up the GitHub documentation.
+- Anjan Kumar Basavaraj Gurudatt: config management
+- Joshua Nevin Chandrasekar: containerization and monitoring
+- Sakshi Gorkhali: performance tracking and experiment tracking, W&B report
+- Angel Hernandez: Set up logging with Rich and cleaning up the GitHub documentation.
 
 ## References
 
