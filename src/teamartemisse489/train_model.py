@@ -6,7 +6,7 @@ import os
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import hydra
 import joblib
@@ -28,7 +28,7 @@ os.environ.setdefault("WANDB_DIR", str(_WANDB_RUNS))
 logger = get_logger(__name__)
 
 
-def validate_config(cfg) -> None:
+def validate_config(cfg: DictConfig) -> None:
     """Validate important Hydra config values."""
     if cfg.training.epochs <= 0:
         raise ValueError("training.epochs must be greater than 0")
@@ -45,7 +45,9 @@ def validate_config(cfg) -> None:
     """Train the model and persist the fitted artifact to ``model_dir``."""
 
 
-def eval_topk(predictions: list[Any], k: int = 10, threshold: float = 3.0):
+def eval_topk(
+    predictions: list[Any], k: int = 10, threshold: float = 3.0
+) -> dict[str, Any]:
     user_data = defaultdict(list)
 
     for uid, _, true_r, est, _ in predictions:
@@ -82,7 +84,9 @@ def eval_topk(predictions: list[Any], k: int = 10, threshold: float = 3.0):
 
 
 # Train
-def train(data_path: Path, model_dir: Path, cfg) -> tuple[Path, dict[str, float]]:
+def train(
+    data_path: Path, model_dir: Path, cfg: DictConfig
+) -> tuple[Path, dict[str, float]]:
 
     logger.info("Loading training data from %s", data_path)
 
@@ -143,23 +147,24 @@ def train(data_path: Path, model_dir: Path, cfg) -> tuple[Path, dict[str, float]
 
     wandb.log(metrics)
 
-    wandb.run.summary.update(
-        {
-            "best_rmse": float(rmse_val),
-            "best_mae": float(mae_val),
-            "best_precision_at_10": float(eval_res["precision"]),
-            "best_recall_at_10": float(eval_res["recall"]),
-            "num_users": num_users,
-            "num_movies": num_movies,
-            "num_ratings": num_ratings,
-            "rating_column": rating_col,
-            "rating_scale_min": 1,
-            "rating_scale_max": 5,
-            "test_size": float(cfg.data.test_size),
-            "random_state": int(cfg.training.seed),
-            "preprocessing_target_rating_used": bool("target_rating" in df.columns),
-        }
-    )
+    if wandb.run is not None:
+        wandb.run.summary.update(
+            {
+                "best_rmse": float(rmse_val),
+                "best_mae": float(mae_val),
+                "best_precision_at_10": float(eval_res["precision"]),
+                "best_recall_at_10": float(eval_res["recall"]),
+                "num_users": num_users,
+                "num_movies": num_movies,
+                "num_ratings": num_ratings,
+                "rating_column": rating_col,
+                "rating_scale_min": 1,
+                "rating_scale_max": 5,
+                "test_size": float(cfg.data.test_size),
+                "random_state": int(cfg.training.seed),
+                "preprocessing_target_rating_used": bool("target_rating" in df.columns),
+            }
+        )
 
     wandb.log(
         {
@@ -192,11 +197,13 @@ def main(cfg: DictConfig) -> None:
 
     logger.info("Loaded Hydra config:\n%s", OmegaConf.to_yaml(cfg))
 
+    wandb_config = cast(dict[str, Any], OmegaConf.to_container(cfg, resolve=True))
+
     wandb.init(
         project=cfg.logging.wandb_project,
         entity=cfg.logging.wandb_entity,
         name=cfg.logging.run_name,
-        config=OmegaConf.to_container(cfg, resolve=True),
+        config=wandb_config,
         mode=cfg.logging.wandb_mode,
     )
 

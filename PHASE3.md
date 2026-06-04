@@ -32,21 +32,34 @@ Phase 3 implements continuous integration/continuous deployment (CI/CD) pipeline
 
 ## 2. Continuous Docker Building & CML
 
-- [ ] **Automated Docker Builds**: Configure Docker build pipeline triggered by:
-  - [ ] Commits to main branch
-  - [ ] Version tags
-  - [ ] Manual workflow dispatch
-- [ ] **Docker Push**: Implement push to container registry (Docker Hub, GitHub Container Registry, or GCP)
-- [ ] **CML Initialization**: Initialize CML in repository
-- [ ] **CML Workflow**: Create GitHub Actions workflow for CML that:
-  - [ ] Trains model on workflow runner
-  - [ ] Generates performance metrics
-  - [ ] Creates visualizations/plots
-  - [ ] Comments results on PR
-- [ ] **CML Metrics Output**: Document format and sample output of CML metrics
-- [ ] **CML Plots**: Generate sample plots and document in CML workflow
-- [ ] **Model Comparison**: Create CML output showing comparison of current vs. baseline model
-- [ ] **Workflow Documentation**: Document CML workflow setup and customization
+- [x] **Automated Docker Builds**: `.github/workflows/docker-publish.yml`
+  builds the existing `dockerfiles/Dockerfile` on pull requests, pushes to
+  Docker Hub on commits to `main`, and also supports manual runs through
+  `workflow_dispatch`. The workflow uses Docker Buildx plus the official Docker
+  login, metadata, and build-push actions so every published image receives a
+  commit SHA tag and the default branch receives `latest`.
+  - Required GitHub Actions secrets: `DOCKER_HUB_USERNAME`,
+    `DOCKER_HUB_TOKEN`, and `DOCKER_HUB_REPOSITORY`.
+  - Evidence still needed after pushing: screenshot of the green workflow run
+    and screenshot of the pushed image in Docker Hub.
+- [x] **Docker Push**: The build-push step publishes only on `push` to `main`
+  or manual workflow dispatch, while PRs build the image without publishing.
+  This prevents feature branches from overwriting registry tags while still
+  proving that the Dockerfile compiles before merge.
+- [x] **CML Workflow**: `.github/workflows/cml.yml` runs on pushes, pull
+  requests, and manual dispatch. It installs Python 3.11 with `uv`, sets up CML
+  with `iterative/setup-cml@v2`, runs `scripts/run_cml_report.py`, and posts the
+  generated Markdown report back to the PR with
+  `cml comment create --publish report.md`.
+- [x] **CML Metrics Output**: `scripts/run_cml_report.py` creates a
+  deterministic CI-safe ratings dataset, calls the repository's SVD training
+  function, and writes `reports/cml/metrics.md` plus
+  `reports/cml/metrics.json`. The reported metrics are RMSE, MAE,
+  precision@k, recall@k, and training time.
+- [x] **CML Plots**: The same CML script writes `reports/cml/metrics.png`, a
+  compact bar chart that CML publishes and embeds in the PR comment.
+  - Evidence still needed after opening a PR: screenshot of the
+    `github-actions[bot]` CML comment showing the metrics table and plot.
 
 ---
 
