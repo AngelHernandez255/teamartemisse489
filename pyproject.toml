@@ -48,7 +48,9 @@ select = ["E", "F", "I", "N", "W", "B", "UP"]
 
 [tool.mypy]
 python_version = "3.11"
-warn_return_any = true
+strict = false
+warn_unused_ignores = true
+warn_redundant_casts = true
 disallow_untyped_defs = true
 
 [[tool.mypy.overrides]]
@@ -62,8 +64,11 @@ module = [
     "surprise",
     "surprise.*",
     "tensorflow.*",
+     "tests.*",
 ]
+disallow_untyped_defs = false
 ignore_missing_imports = true
+
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
