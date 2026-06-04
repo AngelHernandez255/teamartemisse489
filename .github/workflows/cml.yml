@@ -2,7 +2,7 @@ name: Continuous Machine Learning
 
 on:
   push:
-    branches: [main]
+    branches: [main, Angel-actions-dev]
   pull_request:
     branches: [main]
   workflow_dispatch:
