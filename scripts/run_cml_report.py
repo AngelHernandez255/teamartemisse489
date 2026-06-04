@@ -58,9 +58,7 @@ def write_metrics_plot(metrics: dict[str, float]) -> None:
     ax.bar(
         [name.replace("_", "\n") for name in plotted_metrics],
         list(plotted_metrics.values()),
-        color=["#2f6f6d", "#d97706", "#4f46e5", "#7c3aed"][
-            : len(plotted_metrics)
-        ],
+        color=["#2f6f6d", "#d97706", "#4f46e5", "#7c3aed"][: len(plotted_metrics)],
     )
     ax.set_title("CML model evaluation metrics")
     ax.set_ylabel("Score")

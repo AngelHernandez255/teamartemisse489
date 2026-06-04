@@ -47,7 +47,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}
+          images: ${{ github.event_name == 'pull_request' && format('local/{0}', github.event.repository.name) || format('{0}/{1}', secrets.DOCKER_HUB_USERNAME, secrets.DOCKER_HUB_REPOSITORY) }}
           tags: |
             type=sha,format=long
             type=raw,value=latest,enable={{is_default_branch}}
