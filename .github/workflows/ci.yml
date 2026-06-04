@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - Angel-action-dev
   pull_request:
     branches:
       - main
