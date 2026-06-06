@@ -6,10 +6,14 @@ Endpoints:
     POST /predict       top-N movie recommendations for a user
 
 Run locally:
-    # Download model and data first
+   # Download model and data first
     gsutil cp gs://mlops489-dvc-123456/models/svd.joblib models/svd.joblib
-    gsutil cp gs://mlops489-dvc-123456/data/processed/ready_to_train_1M.parquet data/processed/ready_to_train_1M.parquet
+
+    gsutil cp gs://mlops489-dvc-123456/data/processed/ready_to_train_1M.parquet \
+        data/processed/ready_to_train_1M.parquet
+
     gsutil cp gs://mlops489-dvc-123456/data/raw/movies.parquet data/raw/movies.parquet
+
     uvicorn app.main:app --reload --port 8080
 
 Environment variables:
@@ -19,7 +23,6 @@ Environment variables:
 
 from __future__ import annotations
 
-import io
 import os
 import tempfile
 from contextlib import asynccontextmanager
@@ -40,12 +43,16 @@ GCS_BUCKET = os.getenv("GCS_BUCKET", "mlops489-dvc-123456")
 # For local development, fall back to local files if they exist
 LOCAL_MODEL_PATH = Path(os.getenv("LOCAL_MODEL_PATH", "models/svd.joblib"))
 LOCAL_MOVIES_PATH = Path(os.getenv("LOCAL_MOVIES_PATH", "data/raw/movies.parquet"))
-LOCAL_RATINGS_PATH = Path(os.getenv("LOCAL_RATINGS_PATH", "data/processed/ready_to_train_1M.parquet"))
-
+LOCAL_RATINGS_PATH = Path(
+    os.getenv(
+        "LOCAL_RATINGS_PATH",
+        "data/processed/ready_to_train_1M.parquet"
+    )
+)
 # GCS paths
-GCS_MODEL_PATH = f"models/svd.joblib"
-GCS_MOVIES_PATH = f"data/raw/movies.parquet"
-GCS_RATINGS_PATH = f"data/processed/ready_to_train_1M.parquet"
+GCS_MODEL_PATH = "models/svd.joblib"
+GCS_MOVIES_PATH = "data/raw/movies.parquet"
+GCS_RATINGS_PATH = "data/processed/ready_to_train_1M.parquet"
 
 # ---------------------------------------------------------------------------
 # GCS loader
@@ -71,8 +78,8 @@ def load_from_gcs_or_local(local_path: Path, gcs_blob_path: str):
         return tmp.name
     except Exception as e:
         raise RuntimeError(
-            f"Could not load {gcs_blob_path} from GCS bucket {GCS_BUCKET}: {e}"
-        )
+             f"Could not load {gcs_blob_path} from GCS bucket {GCS_BUCKET}: {e}"
+        ) from e
 
 
 # ---------------------------------------------------------------------------
@@ -109,7 +116,10 @@ async def lifespan(app: FastAPI):
         ratings_df.groupby("userId")["movieId"].apply(set).to_dict()
     )
     _state["all_movies"] = set(ratings_df["movieId"].unique())
-    print(f"Ratings loaded: {len(_state['all_movies'])} movies, {len(_state['user_seen'])} users ✅")
+    print(
+        f"Ratings loaded: {len(_state['all_movies'])} movies, "
+        f"{len(_state['user_seen'])} users ✅"
+    )
 
     print("\nAPI Ready ✅\n")
     yield
@@ -232,10 +242,26 @@ def predict(request: PredictRequest) -> PredictResponse:
                 title=str(row.get("movieTitle", "Unknown")),
                 year=int(row["movieYear"]) if pd.notna(row.get("movieYear")) else None,
                 predicted_rating=round(float(pred_rating), 4),
-                critic_score=float(row["critic_score"]) if pd.notna(row.get("critic_score")) else None,
-                audience_score=float(row["audience_score"]) if pd.notna(row.get("audience_score")) else None,
-                mpaa_rating=str(row["rating"]) if pd.notna(row.get("rating")) else None,
-                language=str(row["original_language"]) if pd.notna(row.get("original_language")) else None,
+                critic_score=(
+                    float(row["critic_score"])
+                    if pd.notna(row.get("critic_score"))
+                    else None
+                ),
+                audience_score=(
+                    float(row["audience_score"])
+                    if pd.notna(row.get("audience_score"))
+                    else None
+                ),
+                mpaa_rating=(
+                    str(row["rating"])
+                    if pd.notna(row.get("rating"))
+                    else None
+                ),
+                language=(
+                    str(row["original_language"])
+                    if pd.notna(row.get("original_language"))
+                    else None
+                ),
                 runtime=str(row["runtime"]) if pd.notna(row.get("runtime")) else None,
             )
         else:
