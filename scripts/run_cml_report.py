@@ -12,7 +12,6 @@ from omegaconf import OmegaConf
 
 from teamartemisse489.train_model import train
 
-
 ROOT = Path(__file__).resolve().parents[1]
 CML_DIR = ROOT / "reports" / "cml"
 DATA_PATH = ROOT / "data" / "processed" / "cml_sample_ratings.parquet"
