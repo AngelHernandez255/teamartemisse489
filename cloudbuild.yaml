@@ -1,0 +1,68 @@
+substitutions:
+  _REGION: us-central1
+  _REPO: mlops489-docker
+  _IMAGE: teamartemisse489-train
+  _TAG: v1
+  _SERVE_IMAGE: movierecommender-serve
+
+steps:
+  # Build training image
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/${_IMAGE}:${_TAG}
+      - -f
+      - dockerfiles/Dockerfile
+      - .
+
+  # Push training image
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - --all-tags
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/${_IMAGE}
+
+  # Build serving image
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/${_SERVE_IMAGE}:latest
+      - -f
+      - app/Dockerfile
+      - .
+
+  # Push serving image
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/${_SERVE_IMAGE}:latest
+
+  # Deploy to Cloud Run
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - ${_SERVE_IMAGE}
+      - --image
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/${_SERVE_IMAGE}:latest
+      - --region
+      - ${_REGION}
+      - --allow-unauthenticated
+      - --memory
+      - 4Gi
+      - --cpu
+      - '2'
+      - --timeout
+      - '300'
+      - --set-env-vars
+      - GCS_BUCKET=mlops489-dvc-123456
+
+images:
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/${_IMAGE}:${_TAG}'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/${_SERVE_IMAGE}:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

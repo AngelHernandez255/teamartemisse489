@@ -65,44 +65,174 @@ Phase 3 implements continuous integration/continuous deployment (CI/CD) pipeline
 
 ## 3. Deployment on GCP
 
-- [ ] **GCP Project Setup**: Create GCP project and enable necessary APIs
-- [ ] **Service Account**: Create service account with appropriate permissions for:
-  - [ ] Artifact Registry
-  - [ ] Vertex AI
-  - [ ] Cloud Run
-  - [ ] Cloud Functions
-  - [ ] Compute Engine
-- [ ] **Artifact Registry**: Set up Artifact Registry for storing Docker images
-  - [ ] Create repository in Artifact Registry
-  - [ ] Configure authentication from CI/CD
-  - [ ] Push Docker images to registry
-- [ ] **Vertex AI Training (Option A)**: Set up custom training on Vertex AI
-  - [ ] Create training container image
-  - [ ] Configure training job specification
-  - [ ] Document how to submit training jobs
-- [ ] **Compute Engine Training (Option B)**: Set up training on Compute Engine instance
-  - [ ] Create VM instance with GPU if needed
-  - [ ] Document SSH access and training process
-  - [ ] Set up instance for automated training
-- [ ] **Model Registry**: Store trained models in GCS bucket with versioning
-  - [ ] Create GCS bucket for models
-  - [ ] Implement model upload from training
-  - [ ] Document model retrieval process
-- [ ] **FastAPI Service**: Create FastAPI application for model serving
-  - [ ] Define inference endpoint(s)
-  - [ ] Implement request validation
-  - [ ] Add health check endpoint
-  - [ ] Document API specification
-- [ ] **Cloud Functions Deployment (Option A)**: Deploy inference as Cloud Function
-  - [ ] Package model and FastAPI app for Cloud Functions
-  - [ ] Create Cloud Function with appropriate memory/timeout
-  - [ ] Configure HTTP trigger
-  - [ ] Document invocation and response format
-- [ ] **Cloud Run Deployment (Option B)**: Deploy as containerized service on Cloud Run
-  - [ ] Create Dockerfile optimized for Cloud Run
-  - [ ] Test locally with Cloud Run emulator
-  - [ ] Deploy to Cloud Run with auto-scaling
-  - [ ] Document deployment process
+- [x] **GCP Project Setup**: GCP project `mlops-recommenderproject` (ID: `682507623900`) was created with `us-central1` as the default region.  The following APIs were enabled:
+  ```bash
+  gcloud services enable \
+      artifactregistry.googleapis.com \
+      cloudbuild.googleapis.com \
+      aiplatform.googleapis.com \
+      run.googleapis.com \
+      compute.googleapis.com
+  ```
+- [x] **Service Account**: Cloud Build uses the default Cloud Build service account (`682507623900@cloudbuild.gserviceaccount.com`) which has Artifact Registry Writer permissions. Vertex AI custom jobs run under the default Agent Platform service agent, which has access to the GCS bucket via `--scopes=cloud-platform`.
+  - [x] Artifact Registry — Cloud Build service account (`682507623900@cloudbuild.gserviceaccount.com`) granted `roles/artifactregistry.writer` automatically at project setup.
+  - [x] Vertex AI — Agent Platform service agent has access to GCS bucket
+  - [x] **Cloud Run** — Default Compute service account (`682507623900-compute@developer.gserviceaccount.com`) used by the Cloud Run to download model and data from GCS at startup.
+  - [ ] Cloud Functions — not used
+  - [x] Compute Engine — `--scopes=cloud-platform` used when VM was created
+- [x] **Artifact Registry**:  Docker repository `mlops489-docker` stores both the training image and th serving image. Cloud Build pushes new versions automatically on every push to `main` via the `mlops-trigger` trigger. The full build spec lives in `cloudbuild.yaml` at the repo root.
+  - [x] **Create repository in Artifact Registry**: `mlops489-docker` repository created at `us-central1-docker.pkg.dev/mlops-recommenderproject/mlops489-docker`
+  - [x] **Configure authentication from CI/CD**: Cloud Build authenticates to Artifact Registry automatically via the attached service account; local Docker auth configured with `gcloud auth configure-docker us-central1-docker.pkg.dev`
+  - [x] **Push Docker images to registry**: Image
+    `teamartemisse489-train:v1` (3.1 GB) successfully pushed. Latest image digest:
+    `sha256:f8243a54...`. See Cloud Build history screenshot below.
+  ![Artifact Registry — all images](docs/screenshots/Artifact-Registry.png)
+  ![Cloud Build History — trigger and manual builds](docs/screenshots/cloud-build-history.png)
+- [x] **Vertex AI Training (Option A)**: The SVD model was trained as a Vertex AI custom job. Vertex AI automates the full VM lifecycle — it provisions the worker, runs the container, captures logs, and shuts down automatically. The container reads training data directly from GCS via the automatic `/gcs` mount and writes the trained model back to GCS — no data is baked into
+  the image.
+  - [x] **Create training container image**: `dockerfiles/Dockerfile` builds a `python:3.11-slim-bookworm` image with all dependencies from `requirements.txt`, source code from `src/`, and Hydra configs from `configs/`.
+  - [x] **Configure training job specification**: `config_cpu.yaml` specifies `n1-standard-4` (4 vCPUs / 15 GB RAM), 1 replica, and passes GCS paths as Hydra overrides via `containerSpec.args`:
+  - [x] **Document how to submit training jobs**:
+    ```bash
+    # Submit
+    gcloud ai custom-jobs create \
+        --region=us-central1 \
+        --display-name=mlops489-train \
+        --config=config_cpu.yaml
+ 
+    # Stream logs
+    gcloud ai custom-jobs stream-logs <job-id> --region=us-central1
+ 
+    # Clean up — finished jobs are free, only running jobs bill
+    gcloud ai custom-jobs list --region=us-central1 \
+        --filter="state:JOB_STATE_RUNNING OR state:JOB_STATE_PENDING"
+    ```
+ 
+    Job `1276662175284330496` (`mlops489-train-v4`) completed successfully
+  ![Vertex AI Custom Jobs](docs/screenshots/vertex-AI-custom-jobs.png)
+- [ ] **Compute Engine Training (Option B)**: Not used
+- [x] **Model Registry**: Trained model artifacts are stored in the GCS bucket `gs://mlops489-dvc-123456/models/`. The bucket already existed as the DVC remote store; a separate `models/` prefix is used for trained artifacts so DVC-managed data and model outputs stay cleanly separated.
+  - [x] **Create GCS bucket for models**: `gs://mlops489-dvc-123456/models/` prefix used within the existing DVC bucket
+
+  - [x] **Implement model upload from training**: The training script saves the fitted SVD model via `joblib.dump` to the path specified by `cfg.paths.model_dir`.  When run on Vertex AI with `paths.model_dir=/gcs/mlops489-dvc-123456/models`, the file is written directly to GCS:
+    ```bash
+    gsutil ls gs://mlops489-dvc-123456/models/
+    # gs://mlops489-dvc-123456/models/svd.joblib
+    ```
+    ![GCS Data](docs/screenshots/Bucket-data.png)
+    ![GCS Model Artifact](docs/screenshots/GCP-model.png)
+
+  - [x] **Document model retrieval**:
+    ```bash
+    # Download model locally
+    gsutil cp gs://mlops489-dvc-123456/models/svd.joblib models/svd.joblib
+    # Or load directly in Python
+    import joblib
+    model = joblib.load("svd.joblib")
+    ```
+
+- [x] **FastAPI Service**: A FastAPI application (`app/main.py`) wraps the trained SVD model and exposes three endpoints. At startup, the app downloads  the model and data files from GCS using `google-cloud-storage` — nothing is baked into the image. This keeps the serving image small (~800 MB vs ~4 GB if data were included) and makes it trivial to update the model without rebuilding the image.
+
+  - [x] Define inference endpoint(s)
+    | Method | Path | Description |
+    |---|---|---|
+    | `GET` | `/` | Root — confirms API is live |
+    | `GET` | `/health` | Health check — used by Cloud Run readiness probe |
+    | `POST` | `/predict` | Returns top-N recommendations for a user |
+
+ - [x] **Implement request validation**: Pydantic models enforce the schema:
+    ```python
+    class PredictRequest(BaseModel):
+        user_id: int   # must be a valid integer userId
+        top_n: int     # must be between 1 and 100 (default 10)
+    ```
+  - [x] **Add health check endpoint**:
+    ```bash
+    curl https://movierecommender-serve-682507623900.us-central1.run.app/health
+    # {"status":"ok","model_loaded":true,"catalogue_size":8191,"users_in_index":565657}
+    ```
+ 
+  - [x] **Document API specification**: Auto-generated OpenAPI docs available at:
+    ```
+    https://movierecommender-serve-682507623900.us-central1.run.app/docs
+    ```
+ 
+    ![Swagger UI — all endpoints](docs/screenshots/swagger.png)
+    ![POST /predict — request body](docs/screenshots/predic-body.png)
+    ![POST /predict — response body with movie recommendations](docs/screenshots/response-body.png)
+ 
+  ![curl output from live Cloud Run URL](docs/screenshots/curl-output.png)
+
+- [ ] **Cloud Functions Deployment (Option A)
+
+- [x] **Cloud Run Deployment (Option B)**: The FastAPI serving container is deployed to Cloud Run as a fully managed, auto-scaling service. 
+
+  - [x] **Create Dockerfile optimized for Cloud Run** (`app/Dockerfile`):
+    The serving Dockerfile is intentionally lightweight — it copies only `app/main.py` and `requirements-serve.txt`. No training code, no data, no model. Everything is downloaded from GCS at container startup.
+    ```dockerfile
+    FROM python:3.11-slim-bookworm
+    ENV PORT=8080 GCS_BUCKET=mlops489-dvc-123456
+    WORKDIR /app
+    COPY requirements-serve.txt .
+    RUN pip install --no-cache-dir -r requirements-serve.txt
+    COPY app/ app/
+    EXPOSE ${PORT}
+    CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]
+    ```
+ 
+  - [x] **Test locally**: API tested locally with uvicorn before deploying:
+    ```bash
+    uvicorn app.main:app --reload --port 8080
+    curl http://localhost:8080/health
+    curl -X POST http://localhost:8080/predict \
+        -H "Content-Type: application/json" \
+        -d '{"user_id": 782587125, "top_n": 5}'
+    ```
+ 
+  - [x] **Deploy to Cloud Run with auto-scaling**:
+    ```bash
+    # Build for linux/amd64 
+    docker buildx build \
+        --platform linux/amd64 \
+        -f app/Dockerfile \
+        -t us-central1-docker.pkg.dev/mlops-recommenderproject/mlops489-docker/movierecommender-serve:latest \
+        --push \
+        .
+ 
+    # Deploy
+    gcloud run deploy movierecommender-serve \
+        --image us-central1-docker.pkg.dev/mlops-recommenderproject/mlops489-docker/movierecommender-serve:latest \
+        --region us-central1 \
+        --allow-unauthenticated \
+        --memory 4Gi \
+        --cpu 2 \
+        --timeout 300 \
+        --set-env-vars GCS_BUCKET=mlops489-dvc-123456
+    ```
+ 
+  - [x] **Document deployment process**:
+    | Field | Value |
+    |---|---|
+    | Service name | `movierecommender-serve` |
+    | Region | `us-central1` |
+    | URL | `https://movierecommender-serve-682507623900.us-central1.run.app` |
+    | Memory | 4 GiB |
+    | CPU | 2 vCPU |
+    | Timeout | 300 seconds |
+    | Concurrency | 80 requests/instance |
+    | Max instances | 3 |
+    | Scaling | Auto (min 0, max 3) |
+    | Billing | Request-based |
+    Verify deployment:
+    ```bash
+    gcloud run services list
+    gcloud run services describe movierecommender-serve --region us-central1
+    ```
+ 
+    ![Cloud Run console — successful deployment](docs/screenshots/console-deployment.png)
+  **Continuous deployment** is wired into `cloudbuild.yaml` — every push to
+  `main` rebuilds both images and redeploys the serving container automatically:
+
 - [ ] **Streamlit/Gradio Deployment (Option C)**: Deploy demo app on HuggingFace Spaces
   - [ ] Create Streamlit or Gradio interface for model
   - [ ] Push to GitHub repository

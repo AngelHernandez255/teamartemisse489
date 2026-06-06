@@ -198,7 +198,50 @@ pip install -r requirements_dev.txt
 # Set up pre-commit hooks
 pre-commit install
 
-# Run tests to verify setup
+## DVC & VM access (GCS)
+
+This project stores large dataset files with DVC and a GCS remote (bucket: `mlops489-dvc-123456`). Use the steps below to verify access from a Compute Engine VM or to instruct teammates how to retrieve the data locally.
+
+If you are a teammate using your own laptop, you do **not** need the VM steps. You only need to install DVC with GCS support, pull the repo, and run `dvc pull` from the project root.
+
+1) SSH to the VM (example):
+
+```bash
+gcloud compute ssh my-vm --zone=us-central1-a --project=mlops-recommenderproject
+```
+
+2) On the VM: install basic dependencies and DVC with GCS support (one-time).
+
+```bash
+# Debian/Ubuntu example (run as the VM user)
+sudo apt-get update && sudo apt-get install -y python3-pip git
+python3 -m pip install --user "dvc[gs]"
+export PATH=$HOME/.local/bin:$PATH   # add to PATH for that session
+```
+
+3) Clone the repo (on the VM) and run `dvc pull` from the project root:
+
+```bash
+git clone https://github.com/<your-org-or-username>/<repo>.git
+cd <repo>
+dvc pull
+```
+
+Notes:
+- `dvc pull` must be run from the repository root where `.dvc` and `.git` exist. If you run `dvc pull` outside the repo you'll see: `ERROR: you are not inside of a DVC repository`.
+- The VM must have a service account attached with bucket access (this project uses `dvc-uploader` attached to the VM). If `gsutil ls gs://mlops489-dvc-123456` works on the VM, DVC should be able to `pull` as well.
+
+Teammate instructions for a local machine (one-time to get data locally):
+
+```bash
+pip install "dvc[gs]"
+git pull
+dvc pull
+```
+
+Then run the project tests if you want to verify the checkout:
+
+```bash
 pytest tests/
 ```
 

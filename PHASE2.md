@@ -280,7 +280,7 @@ We logged every important training and evaluation setting so each experiment can
 - Hyperparameters: `n_factors`, `n_epochs`, `lr_all`, `reg_all`
 - Training settings: `random_state`, `test_size`, `k`, and the relevance threshold used for top-k evaluation
 - Dataset metadata: `num_users`, `num_movies`, `num_ratings`, `rating_column`, `rating_scale_min`, `rating_scale_max`, and whether target-rating preprocessing was used
-![Wandbchart](wandbchart.png)
+![Wandbchart](docs/screenshots/wandbchart.png)
 
 These values are passed into `wandb.init(config=...)` in the training script
 
@@ -291,7 +291,7 @@ The model and evaluation outputs were saved locally and tracked as artifacts in 
   - `models/svd_metrics.json`
 
 The model is saved locally, then attached to W&B as an artifact so the final run can be traced back to the exact trained model.
-![trainlog](trainlog.png)
+![trainlog](docs/screenshots/trainlog.png)
 
 
 - [x] **Experiment Comparison**: Create comparison of at least 3 different experiments
@@ -299,7 +299,7 @@ We compared multiple experiments using the W&B Runs table.
 - Primary sort: `precision_at_10` in descending order
 - Secondary checks: `rmse`, then `training_time`
 - Comparison columns used in W&B: `precision_at_10`, `rmse`, `mae`, `training_time`
-![wandb_runs_sorted_precision_at_10](wandb_runs_sorted_precision_at_10.png)
+![wandb_runs_sorted_precision_at_10](docs/screenshots/wandb_runs_sorted_precision_at_10.png)
 
 This comparison was done across the sweep runs, which explored different combinations of `n_factors`, `n_epochs`, `lr_all`, and `reg_all`.
 - [x] **Visualization**: Generate performance comparison charts/plots

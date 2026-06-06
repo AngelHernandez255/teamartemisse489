@@ -189,7 +189,7 @@ def train(
     return model_path, metrics
 
 
-@hydra.main(version_base=None, config_path="../../configs", config_name="config")
+@hydra.main(version_base=None, config_path="/app/configs", config_name="config")
 def main(cfg: DictConfig) -> None:
     setup_logging()
     validate_config(cfg)

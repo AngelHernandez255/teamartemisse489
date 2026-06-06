@@ -1,0 +1,25 @@
+outs:
+- hash: md5
+  path: raw
+  files:
+  - relpath: .gitkeep
+    md5: d41d8cd98f00b204e9800998ecf8427e
+    size: 0
+    cloud:
+      storage:
+        etag: 08e1d598fdeaf194031001
+        version_id: '1780722157628129'
+  - relpath: movies.parquet
+    md5: ce72341959e6163109fa21f847749adc
+    size: 928358
+    cloud:
+      storage:
+        etag: 08c0a1adfdeaf194031001
+        version_id: '1780722157965504'
+  - relpath: training_sample_1M.parquet
+    md5: 8d3e2b0483bf46161fc12fd4c4e36422
+    size: 30315953
+    cloud:
+      storage:
+        etag: 08f7e2ecfdeaf194031001
+        version_id: '1780722159006071'
