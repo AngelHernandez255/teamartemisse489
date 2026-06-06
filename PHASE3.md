@@ -65,29 +65,95 @@ Phase 3 implements continuous integration/continuous deployment (CI/CD) pipeline
 
 ## 3. Deployment on GCP
 
-- [ ] **GCP Project Setup**: Create GCP project and enable necessary APIs
-- [ ] **Service Account**: Create service account with appropriate permissions for:
-  - [ ] Artifact Registry
-  - [ ] Vertex AI
-  - [ ] Cloud Run
-  - [ ] Cloud Functions
-  - [ ] Compute Engine
-- [ ] **Artifact Registry**: Set up Artifact Registry for storing Docker images
-  - [ ] Create repository in Artifact Registry
-  - [ ] Configure authentication from CI/CD
-  - [ ] Push Docker images to registry
-- [ ] **Vertex AI Training (Option A)**: Set up custom training on Vertex AI
-  - [ ] Create training container image
-  - [ ] Configure training job specification
-  - [ ] Document how to submit training jobs
-- [ ] **Compute Engine Training (Option B)**: Set up training on Compute Engine instance
-  - [ ] Create VM instance with GPU if needed
-  - [ ] Document SSH access and training process
-  - [ ] Set up instance for automated training
-- [ ] **Model Registry**: Store trained models in GCS bucket with versioning
-  - [ ] Create GCS bucket for models
-  - [ ] Implement model upload from training
-  - [ ] Document model retrieval process
+- [x] **GCP Project Setup**: GCP project `mlops-recommenderproject` (ID: `682507623900`)
+  was created and all required APIs were enabled including `artifactregistry.googleapis.com`,
+  `cloudbuild.googleapis.com`, and `aiplatform.googleapis.com`. The project uses
+  `us-central1` as the default region throughout to keep all resources co-located
+  and minimize egress costs.
+- [x] **Service Account**: Cloud Build uses the default Cloud Build service account
+  (`682507623900@cloudbuild.gserviceaccount.com`) which has Artifact Registry Writer
+  permissions. Vertex AI custom jobs run under the default Agent Platform service agent,
+  which has access to the GCS bucket via `--scopes=cloud-platform`.
+  - [x] Artifact Registry — Cloud Build service account has `roles/artifactregistry.writer`
+  - [x] Vertex AI — Agent Platform service agent has access to GCS bucket
+  - [ ] Cloud Run — permissions to be configured in section 3.3
+  - [ ] Cloud Functions — not used (Cloud Run chosen as deployment option)
+  - [x] Compute Engine — `--scopes=cloud-platform` used when VM was created
+- [x] **Artifact Registry**: Docker repository `mlops489-docker` created in
+  `us-central1`. The training image `teamartemisse489-train` is built automatically
+  by Cloud Build on every push to `main` via the `mlops-trigger` trigger, and can
+  also be built manually with `gcloud builds submit`. See `cloudbuild.yaml` at the
+  repo root for the full build spec.
+  - [x] **Create repository in Artifact Registry**: `mlops489-docker` repository
+    created at `us-central1-docker.pkg.dev/mlops-recommenderproject/mlops489-docker`
+  - [x] **Configure authentication from CI/CD**: Cloud Build authenticates to
+    Artifact Registry automatically via the attached service account; local Docker
+    auth configured with `gcloud auth configure-docker us-central1-docker.pkg.dev`
+  - [x] **Push Docker images to registry**: Image
+    `teamartemisse489-train:v1` (3.1 GB) successfully pushed. Latest image digest:
+    `sha256:f8243a54...`. See Cloud Build history screenshot below.
+  ![Cloud Build History](docs/screenshots/cloud-build-history.png)
+  ![Artifact Registry](docs/screenshots/Artifact-Registry.png)
+- [x] **Vertex AI Training (Option A)**: Custom training job submitted to Vertex AI
+  using the `teamartemisse489-train:v1` container image. Training reads the
+  1M-rating MovieLens dataset directly from GCS via the automatic `/gcs` mount
+  (no `dvc pull` inside the container), trains an SVD collaborative filtering model,
+  and writes the trained artifact back to GCS. Job spec is in `config_cpu.yaml`
+  at the repo root.
+  - [x] **Create training container image**: `dockerfiles/Dockerfile` builds a
+    `python:3.11-slim-bookworm` image with all dependencies from `requirements.txt`,
+    source code from `src/`, and Hydra configs from `configs/`.
+  - [x] **Configure training job specification**: `config_cpu.yaml` specifies
+    `n1-standard-4` (4 vCPUs / 15 GB RAM), 1 replica, and passes GCS paths as
+    Hydra overrides via `containerSpec.args`:
+  - [x] **Document how to submit training jobs**:
+    ```bash
+    gcloud ai custom-jobs create \
+        --region=us-central1 \
+        --display-name=mlops489-train \
+        --config=config_cpu.yaml
+    # Stream logs
+    gcloud ai custom-jobs stream-logs <job-id> --region=us-central1
+    ```
+    Job `1276662175284330496` (`mlops489-train-v4`) completed with
+    `JOB_STATE_SUCCEEDED` in 1 min 30 sec.
+  ![Vertex AI Custom Jobs](docs/screenshots/vertex-AI-custom-jobs.png)
+- [ ] **Compute Engine Training (Option B)**: Not used — Vertex AI (Option A) was
+  chosen as the training platform. A Debian 12 VM (`mlops489-train`, `n1-standard-4`,
+  `us-central1-a`) was created and Docker was installed during exploration, but
+  training was ultimately run on Vertex AI. 
+- [x] **Model Registry**: Trained model artifacts are stored in the GCS bucket
+  `gs://mlops489-dvc-123456/models/`. The bucket already existed as the DVC
+  remote store; a separate `models/` prefix is used for trained artifacts so
+  DVC-managed data and model outputs stay cleanly separated.
+  - [x] **Create GCS bucket for models**: `gs://mlops489-dvc-123456/models/`
+    prefix used within the existing DVC bucket
+      **GCS Bucket — `data/processed/` showing uploaded training data:**
+
+
+    ![GCS Data](docs/screenshots/Bucket-data.png)
+    
+    **GCS Bucket — `models/` showing saved model artifact `svd.joblib`:**
+
+    ![GCS Model Artifact](docs/screenshots/GCP-model.png)
+
+  - [x] **Implement model upload from training**: The training script saves the
+    fitted SVD model via `joblib.dump` to the path specified by `cfg.paths.model_dir`.
+    When run on Vertex AI with `paths.model_dir=/gcs/mlops489-dvc-123456/models`,
+    the file is written directly to GCS:
+    ```bash
+    gsutil ls gs://mlops489-dvc-123456/models/
+    # gs://mlops489-dvc-123456/models/svd.joblib
+    ```
+  - [x] **Document model retrieval**:
+    ```bash
+    # Download model locally
+    gsutil cp gs://mlops489-dvc-123456/models/svd.joblib models/svd.joblib
+    # Or load directly in Python
+    import joblib
+    model = joblib.load("svd.joblib")
+    ```
+
 - [ ] **FastAPI Service**: Create FastAPI application for model serving
   - [ ] Define inference endpoint(s)
   - [ ] Implement request validation
