@@ -1,6 +1,25 @@
 outs:
-- md5: 8a77100ca34d72b8b2afd40ad86bd0b5.dir
-  size: 28404300
-  nfiles: 3
-  hash: md5
+- hash: md5
   path: processed
+  files:
+  - relpath: .gitkeep
+    md5: d41d8cd98f00b204e9800998ecf8427e
+    size: 0
+    cloud:
+      storage:
+        etag: 08d4f7a2fdeaf194031001
+        version_id: '1780722157796308'
+  - relpath: ratings_matrix.parquet
+    md5: 6488217e04800019a0b66f3526b54893
+    size: 6757509
+    cloud:
+      storage:
+        etag: 089cedadfdeaf194031001
+        version_id: '1780722157975196'
+  - relpath: ready_to_train_1M.parquet
+    md5: 83d45a03df8f7c966a00cb5838cbcbf4
+    size: 21646791
+    cloud:
+      storage:
+        etag: 08f49a8bfdeaf194031001
+        version_id: '1780722157407604'
