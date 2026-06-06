@@ -31,7 +31,7 @@ COPY scripts/ scripts/
 COPY data/ data/
 COPY models/ models/
 COPY reports/ reports/
-
+COPY configs/ configs/ 
 RUN pip install --no-cache-dir . --no-deps
 
 ENTRYPOINT ["python", "-u", "-m", "teamartemisse489.train_model"]
