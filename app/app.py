@@ -1,5 +1,5 @@
-from pathlib import Path
 import base64
+from pathlib import Path
 
 import gradio as gr
 import numpy as np
@@ -13,12 +13,16 @@ RATINGS_PATH = BASE_DIR / "data" / "processed" / "ready_to_train_1M.parquet"
 
 movies_df = pd.read_parquet(MOVIES_PATH).copy()
 ratings_df = pd.read_parquet(RATINGS_PATH).copy()
-high_ratings_df = ratings_df[
-    ratings_df["target_rating"] >= 4
-][["userId", "movieId", "target_rating"]].copy()
+high_ratings_df = ratings_df[ratings_df["target_rating"] >= 4][
+    ["userId", "movieId", "target_rating"]
+].copy()
 
-movies_df["movieYear"] = pd.to_numeric(movies_df["movieYear"], errors="coerce").fillna(0)
-movies_df["audience_score"] = pd.to_numeric(movies_df["audience_score"], errors="coerce")
+movies_df["movieYear"] = pd.to_numeric(
+    movies_df["movieYear"], errors="coerce"
+).fillna(0)
+movies_df["audience_score"] = pd.to_numeric(
+    movies_df["audience_score"], errors="coerce"
+)
 
 movies_df["display_title"] = (
     movies_df["movieTitle"].astype(str)
@@ -26,22 +30,25 @@ movies_df["display_title"] = (
     + movies_df["movieYear"].astype(int).astype(str)
     + ")"
 )
-movies_df = movies_df.drop_duplicates(
-    subset=["display_title"]
-).reset_index(drop=True)
+movies_df = movies_df.drop_duplicates(subset=["display_title"]).reset_index(drop=True)
 
-movie_title_to_id = dict(zip(movies_df["display_title"], movies_df["movieId"]))
-movie_id_to_title = dict(zip(movies_df["movieId"], movies_df["display_title"]))
+movie_title_to_id = dict(
+    zip(movies_df["display_title"], movies_df["movieId"], strict=False)
+)
+
+movie_id_to_title = dict(
+    zip(movies_df["movieId"], movies_df["display_title"], strict=False)
+)
 movie_info = (
-    movies_df
-    .drop_duplicates(subset=["display_title"])
+    movies_df.drop_duplicates(subset=["display_title"])
     .set_index("display_title")
     .to_dict("index")
 )
 
 valid_movie_ids = set(ratings_df["movieId"].unique())
 movie_choices = [
-    title for title, movie_id in movie_title_to_id.items()
+    title
+    for title, movie_id in movie_title_to_id.items()
     if movie_id in valid_movie_ids
 ]
 
@@ -75,8 +82,7 @@ bg_css = (
     background-attachment: fixed !important;
     """
     if encoded_bg
-    else
-    """
+    else """
     background: linear-gradient(135deg, #050505, #141414, #2b1055) !important;
     """
 )
@@ -228,26 +234,21 @@ def clear_movies():
     empty_card = movie_card_html("")
 
     return (
-        [],                    # selected_state
-
-        empty_card,            # card1
-        5,                     # rating1
-
-        empty_card,            # card2
-        5,                     # rating2
-
-        empty_card,            # card3
-        5,                     # rating3
-
-        empty_card,            # card4
-        5,                     # rating4
-
-        empty_card,            # card5
-        5,                     # rating5
-
-        None,                  # movie_search
-        "",                    # recommendations output
+        [],  # selected_state
+        empty_card,  # card1
+        5,  # rating1
+        empty_card,  # card2
+        5,  # rating2
+        empty_card,  # card3
+        5,  # rating3
+        empty_card,  # card4
+        5,  # rating4
+        empty_card,  # card5
+        5,  # rating5
+        None,  # movie_search
+        "",  # recommendations output
     )
+
 
 def recommend_movies(selected_movies, rating1, rating2, rating3, rating4, rating5):
     selected_movies = selected_movies or []
@@ -258,7 +259,7 @@ def recommend_movies(selected_movies, rating1, rating2, rating3, rating4, rating
 
     movie_weights = {}
 
-    for movie_title, rating in zip(selected_movies, ratings):
+    for movie_title, rating in zip(selected_movies, ratings, strict=False):
         if not movie_title:
             continue
 
@@ -274,9 +275,7 @@ def recommend_movies(selected_movies, rating1, rating2, rating3, rating4, rating
         return "Please rate at least one selected movie 3 stars or higher."
 
     user_overlap = (
-        high_ratings_df[
-            high_ratings_df["movieId"].isin(liked_movie_ids)
-        ]
+        high_ratings_df[high_ratings_df["movieId"].isin(liked_movie_ids)]
         .groupby("userId")
         .size()
     )
@@ -298,8 +297,7 @@ def recommend_movies(selected_movies, rating1, rating2, rating3, rating4, rating
         return "No recommendations found. Try different movie choices."
 
     ranked = (
-        candidate_ratings
-        .groupby("movieId")
+        candidate_ratings.groupby("movieId")
         .agg(
             avg_rating=("target_rating", "mean"),
             rating_count=("target_rating", "count"),
@@ -327,14 +325,9 @@ def recommend_movies(selected_movies, rating1, rating2, rating3, rating4, rating
         ranked["critic_score"], errors="coerce"
     ).fillna(50)
 
-    ranked["movieYear"] = pd.to_numeric(
-        ranked["movieYear"], errors="coerce"
-    ).fillna(0)
+    ranked["movieYear"] = pd.to_numeric(ranked["movieYear"], errors="coerce").fillna(0)
 
-    ranked = ranked[
-        (ranked["audience_score"] >= 60)
-        & (ranked["movieYear"] >= 1980)
-    ]
+    ranked = ranked[(ranked["audience_score"] >= 60) & (ranked["movieYear"] >= 1980)]
 
     ranked["score"] = (
         ranked["avg_rating"]
@@ -360,7 +353,11 @@ def recommend_movies(selected_movies, rating1, rating2, rating3, rating4, rating
     if not cards:
         return "No recommendations found. Try different movie choices."
 
-    return "<div style='display:grid;grid-template-columns:repeat(5,1fr);gap:18px;'>" + "".join(cards) + "</div>"
+    return (
+        "<div style='display:grid;grid-template-columns:repeat(5,1fr);gap:18px;'>"
+        + "".join(cards)
+        + "</div>"
+    )
 
 
 with gr.Blocks() as demo:
@@ -381,21 +378,49 @@ with gr.Blocks() as demo:
                 with gr.Row():
                     with gr.Column():
                         card1 = gr.HTML(movie_card_html(""))
-                        rating1 = gr.Radio(STAR_CHOICES, value=5, label="Your Rating", visible=False)
+                        rating1 = gr.Radio(
+                            STAR_CHOICES,
+                            value=5,
+                            label="Your Rating",
+                            visible=False,
+                        )
                     with gr.Column():
                         card2 = gr.HTML(movie_card_html(""))
-                        rating2 = gr.Radio(STAR_CHOICES, value=5, label="Your Rating", visible=False)
+                        rating2 = gr.Radio(
+                            STAR_CHOICES,
+                            value=5,
+                            label="Your Rating",
+                            visible=False,
+                        )
                     with gr.Column():
                         card3 = gr.HTML(movie_card_html(""))
-                        rating3 = gr.Radio(STAR_CHOICES, value=5, label="Your Rating", visible=False)
+                        rating3 = gr.Radio(
+                            STAR_CHOICES,
+                            value=5,
+                            label="Your Rating",
+                            visible=False,
+                        )
                     with gr.Column():
                         card4 = gr.HTML(movie_card_html(""))
-                        rating4 = gr.Radio(STAR_CHOICES, value=5, label="Your Rating", visible=False)
+                        rating4 = gr.Radio(
+                            STAR_CHOICES,
+                            value=5,
+                            label="Your Rating",
+                            visible=False,
+                        )
                     with gr.Column():
                         card5 = gr.HTML(movie_card_html(""))
-                        rating5 = gr.Radio(STAR_CHOICES, value=5, label="Your Rating", visible=False)
+                        rating5 = gr.Radio(
+                            STAR_CHOICES,
+                            value=5,
+                            label="Your Rating",
+                            visible=False,
+                        )
 
-                recommend_btn = gr.Button(" Generate Recommendations", elem_id="recommend-btn")
+                recommend_btn = gr.Button(
+                    " Generate Recommendations",
+                    elem_id="recommend-btn",
+                )
 
         with gr.Column(scale=1):
             with gr.Column(elem_id="search-panel"):
@@ -415,7 +440,6 @@ with gr.Blocks() as demo:
         gr.Markdown("##  Recommended For You")
         output = gr.HTML("")
 
-    
     add_button.click(
         fn=add_movie,
         inputs=[movie_search, selected_state],
@@ -435,22 +459,16 @@ with gr.Blocks() as demo:
         inputs=[],
         outputs=[
             selected_state,
-
             card1,
             rating1,
-
             card2,
             rating2,
-
             card3,
             rating3,
-
             card4,
             rating4,
-
             card5,
             rating5,
-
             movie_search,
             output,
         ],
