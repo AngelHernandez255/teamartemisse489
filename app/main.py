@@ -44,15 +44,13 @@ GCS_BUCKET = os.getenv("GCS_BUCKET", "mlops489-dvc-123456")
 LOCAL_MODEL_PATH = Path(os.getenv("LOCAL_MODEL_PATH", "models/svd.joblib"))
 LOCAL_MOVIES_PATH = Path(os.getenv("LOCAL_MOVIES_PATH", "data/raw/movies.parquet"))
 LOCAL_RATINGS_PATH = Path(
-    os.getenv(
-        "LOCAL_RATINGS_PATH",
-        "data/processed/ready_to_train_1M.parquet"
-    )
+    os.getenv("LOCAL_RATINGS_PATH", "data/processed/ready_to_train_1M.parquet")
 )
 # GCS paths
 GCS_MODEL_PATH = "models/svd.joblib"
 GCS_MOVIES_PATH = "data/raw/movies.parquet"
 GCS_RATINGS_PATH = "data/processed/ready_to_train_1M.parquet"
+
 
 # ---------------------------------------------------------------------------
 # GCS loader
@@ -66,6 +64,7 @@ def load_from_gcs_or_local(local_path: Path, gcs_blob_path: str):
     print(f"Downloading from GCS: gs://{GCS_BUCKET}/{gcs_blob_path}")
     try:
         from google.cloud import storage
+
         client = storage.Client()
         bucket = client.bucket(GCS_BUCKET)
         blob = bucket.blob(gcs_blob_path)
@@ -78,7 +77,7 @@ def load_from_gcs_or_local(local_path: Path, gcs_blob_path: str):
         return tmp.name
     except Exception as e:
         raise RuntimeError(
-             f"Could not load {gcs_blob_path} from GCS bucket {GCS_BUCKET}: {e}"
+            f"Could not load {gcs_blob_path} from GCS bucket {GCS_BUCKET}: {e}"
         ) from e
 
 
@@ -102,8 +101,16 @@ async def lifespan(app: FastAPI):
     print("Loading movies metadata...")
     movies_path = load_from_gcs_or_local(LOCAL_MOVIES_PATH, GCS_MOVIES_PATH)
     movies_df = pd.read_parquet(movies_path)
-    keep_cols = ["movieId", "movieTitle", "movieYear", "rating",
-                 "critic_score", "audience_score", "original_language", "runtime"]
+    keep_cols = [
+        "movieId",
+        "movieTitle",
+        "movieYear",
+        "rating",
+        "critic_score",
+        "audience_score",
+        "original_language",
+        "runtime",
+    ]
     keep_cols = [c for c in keep_cols if c in movies_df.columns]
     _state["movies"] = movies_df[keep_cols].set_index("movieId")
     print(f"Movies loaded: {len(_state['movies'])} titles ✅")
@@ -112,9 +119,7 @@ async def lifespan(app: FastAPI):
     print("Loading ratings data...")
     ratings_path = load_from_gcs_or_local(LOCAL_RATINGS_PATH, GCS_RATINGS_PATH)
     ratings_df = pd.read_parquet(ratings_path, columns=["userId", "movieId"])
-    _state["user_seen"] = (
-        ratings_df.groupby("userId")["movieId"].apply(set).to_dict()
-    )
+    _state["user_seen"] = ratings_df.groupby("userId")["movieId"].apply(set).to_dict()
     _state["all_movies"] = set(ratings_df["movieId"].unique())
     print(
         f"Ratings loaded: {len(_state['all_movies'])} movies, "
@@ -146,15 +151,10 @@ app = FastAPI(
 # ---------------------------------------------------------------------------
 class PredictRequest(BaseModel):
     user_id: int = Field(
-        ...,
-        description="Integer userId from the MovieLens dataset",
-        example=782587125
+        ..., description="Integer userId from the MovieLens dataset", example=782587125
     )
     top_n: int = Field(
-        10,
-        ge=1,
-        le=100,
-        description="Number of recommendations to return (1-100)"
+        10, ge=1, le=100, description="Number of recommendations to return (1-100)"
     )
 
 
@@ -222,7 +222,7 @@ def predict(request: PredictRequest) -> PredictResponse:
         raise HTTPException(
             status_code=404,
             detail=f"No unseen movies found for user {request.user_id}. "
-                   "The user may not exist in the training set.",
+            "The user may not exist in the training set.",
         )
 
     # Score all unseen movies and take top N
@@ -253,9 +253,7 @@ def predict(request: PredictRequest) -> PredictResponse:
                     else None
                 ),
                 mpaa_rating=(
-                    str(row["rating"])
-                    if pd.notna(row.get("rating"))
-                    else None
+                    str(row["rating"]) if pd.notna(row.get("rating")) else None
                 ),
                 language=(
                     str(row["original_language"])
@@ -287,4 +285,5 @@ def predict(request: PredictRequest) -> PredictResponse:
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run("app.main:app", host="0.0.0.0", port=8080, reload=True)
