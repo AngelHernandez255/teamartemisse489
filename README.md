@@ -262,16 +262,13 @@ make help
 
 ### Phase 1
 
-**Anjan Kumar Basavaraj Gurudatt**
-
-**Joshua Nevin Chandrasekar** 
-
-**Angel Hernandez**
+- **Anjan Kumar Basavaraj Gurudatt**
+- **Joshua Nevin Chandrasekar** 
+- **Angel Hernandez**
   - built and uploaded the cookiecutter template
   - initialise the GitHub repo
   - Set up rules for the repo
-
-**Sakshi Gorkhali**
+- **Sakshi Gorkhali**
   - Built baseline recommender system notebook, and implemented collaborative filtering models.
   - Conducted hyperparameter tuning and model evaluation using RMSE, MAR, Precision and Recall metrics.
 
@@ -283,10 +280,13 @@ make help
 - **Angel Hernandez:** Set up logging with Rich and cleaning up the GitHub documentation.
 
 ### Phase 3
-**Sakshi Gorkhali:** Deployment on Google Cloud Platform
-  - Set up the full GCP infrastructure including Artifact Registry, Cloud Build triggers, Vertex AI and DVC remote storage on GCS, for automated training and deployment
+- **Sakshi Gorkhali:** Deployment on Google Cloud Platform
+  - Set up the full GCP infrastructure, including Artifact Registry, Cloud Build triggers, Vertex AI and DVC remote storage on GCS, for automated training and deployment
   - Ran SVD model training as a Vertex AI custom job with data read directly from GCS — model artifact saved back to GCS on completion
   - Built and deployed a FastAPI movie recommender API to GCP Cloud Run.
+- **Angel Hernandez:** Worked on testing, repo management, and GitHub actions.
+  - We already had some tests, so I made sure they were fine.
+  - Fixed an issue with GitHub Actions.
   
 ## References
 
