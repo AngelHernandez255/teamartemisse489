@@ -25,7 +25,7 @@ Build a scalable movie recommendation system using collaborative filtering techn
 - [x] Objective 2
 Develop a reproducible MLOps pipeline that automates data preprocessing, feature engineering, model training, evaluation, and model persistence using industry-standard engineering practices.
 
-- [ ] Objective 3
+- [x] Objective 3
 Establish a maintainable and collaborative machine learning workflow with version control, code quality checks, documentation, and modular project structure to support future deployment and continuous improvement.
 
 ## Architecture Diagram
@@ -200,7 +200,7 @@ pre-commit install
 
 ## DVC & VM access (GCS)
 
-This project stores large dataset files with DVC and a GCS remote (bucket: `mlops489-dvc-123456`). Use the steps below to verify access from a Compute Engine VM or to instruct teammates how to retrieve the data locally.
+This project stores large dataset files with DVC and a GCS remote (bucket: `mlops489-dvc-123456`). Use the steps below to verify access from a Compute Engine VM or to retrieve the data locally.
 
 If you are a teammate using your own laptop, you do **not** need the VM steps. You only need to install DVC with GCS support, pull the repo, and run `dvc pull` from the project root.
 
@@ -226,10 +226,6 @@ git clone https://github.com/<your-org-or-username>/<repo>.git
 cd <repo>
 dvc pull
 ```
-
-Notes:
-- `dvc pull` must be run from the repository root where `.dvc` and `.git` exist. If you run `dvc pull` outside the repo you'll see: `ERROR: you are not inside of a DVC repository`.
-- The VM must have a service account attached with bucket access (this project uses `dvc-uploader` attached to the VM). If `gsutil ls gs://mlops489-dvc-123456` works on the VM, DVC should be able to `pull` as well.
 
 Teammate instructions for a local machine (one-time to get data locally):
 
@@ -267,22 +263,29 @@ make help
 ### Phase 1
 
 Anjan Kumar Basavaraj Gurudatt
--
+  -
 Joshua Nevin Chandrasekar 
--
-Sakshi Gorkhali
--
+  -
 Angel Hernandez
-- built and uploaded the cookiecutter template
-- initialise the GitHub repo
-- Set up rules for the repo 
+  - built and uploaded the cookiecutter template
+  - initialise the GitHub repo
+  - Set up rules for the repo
+Sakshi Gorkhali
+  - Built baseline recommender system notebook, and implemented collaborative filtering models.
+  - Conducted hyperparameter tuning and model evaluation using RMSE, MAR, Precision and Recall metrics.
 
 ### Phase 2
 - Anjan Kumar Basavaraj Gurudatt: config management
 - Joshua Nevin Chandrasekar: containerization and monitoring
-- Sakshi Gorkhali: performance tracking and experiment tracking, W&B report
+- Sakshi Gorkhali: Performance tracking and Experiment Tracking, W&B report
 - Angel Hernandez: Set up logging with Rich and cleaning up the GitHub documentation.
 
+### Phase 3
+Sakshi Gorkhali: Deployment on Google Cloud Platform
+  - Set up the full GCP infrastructure including Artifact Registry, Cloud Build triggers, Vertex AI and DVC remote storage on GCS, for automated training and deployment
+  - Ran SVD model training as a Vertex AI custom job with data read directly from GCS — model artifact saved back to GCS on completion
+  - Built and deployed a FastAPI movie recommender API to GCP Cloud Run.
+  
 ## References
 
 - [Project Documentation](docs/index.md)
