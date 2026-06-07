@@ -17,9 +17,9 @@ high_ratings_df = ratings_df[ratings_df["target_rating"] >= 4][
     ["userId", "movieId", "target_rating"]
 ].copy()
 
-movies_df["movieYear"] = pd.to_numeric(
-    movies_df["movieYear"], errors="coerce"
-).fillna(0)
+movies_df["movieYear"] = pd.to_numeric(movies_df["movieYear"], errors="coerce").fillna(
+    0
+)
 movies_df["audience_score"] = pd.to_numeric(
     movies_df["audience_score"], errors="coerce"
 )
