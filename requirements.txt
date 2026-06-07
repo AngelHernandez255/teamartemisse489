@@ -23,3 +23,7 @@ rich==13.9.4
 psutil==6.0.0
 hydra-core
 omegaconf
+
+# UI
+gradio
+requests

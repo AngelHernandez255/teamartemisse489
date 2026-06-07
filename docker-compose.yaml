@@ -13,3 +13,12 @@ services:
       - PYTHONUNBUFFERED=1
     ports:
       - "8000:8000"
+  cinematch_ui:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.gradio
+    container_name: cinematch_ui
+    volumes:
+      - ./data:/app/data
+    ports:
+      - "7860:7860"
