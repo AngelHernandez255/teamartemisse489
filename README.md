@@ -39,6 +39,9 @@ Establish a maintainable and collaborative machine learning workflow with versio
 ### Phase 2: Containerization & Monitoring
 - See [PHASE2.md](PHASE2.md) for detailed checklist
 
+### Phase 3: Continuous Machine Learning (CML) and Deployment
+- See [PHASE3.md](PHASE3.md) for detailed checklist
+
 #### Containerization
 This phase adds a project Docker image based on `python:3.11-slim-bookworm`. The image installs pinned Python dependencies with `uv`, installs the local `teamartemisse489` package, and runs the training entrypoint by default.
 
