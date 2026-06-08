@@ -55,7 +55,8 @@ curl -X POST \
 # Interactive API docs
 open https://movierecommender-serve-682507623900.us-central1.run.app/docs
 ```
- 
+ See [Deployment.md](Deployment.md) for the full deployment guide.
+
 ## Phase Deliverables
 
 ### Phase 1: Project Design & Model Development
@@ -225,7 +226,7 @@ pip install -r requirements_dev.txt
 
 # Set up pre-commit hooks
 pre-commit install
-
+```
 ## DVC & VM access (GCS)
 
 This project stores large dataset files with DVC and a GCS remote (bucket: `mlops489-dvc-123456`). Use the steps below to verify access from a Compute Engine VM or to retrieve the data locally.
@@ -331,6 +332,7 @@ make help
 - [Phase 1 — Project Design & Model Development](PHASE1.md)
 - [Phase 2 — Containerization & Monitoring](PHASE2.md)
 - [Phase 3 — CI/CD & Deployment](PHASE3.md)
+- [Deployment Guide](Deployment.md)
 - We have used a dataset from kaggle link: https://www.kaggle.com/datasets/bwandowando/rotten-tomatoes-9800-movie-critic-and-user-reviews. For this project, we are using only 1 million user reviews to recommend movies to users.
 
 ## License
