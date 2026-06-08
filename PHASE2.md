@@ -10,7 +10,7 @@ Phase 2 focuses on scaling and operationalizing TeamArtemisSE489 by implementing
 ### 1.1 Dockerfile
 
 - [x] **Dockerfile Creation**: [`dockerfiles/Dockerfile`](dockerfiles/Dockerfile)
-- [x] **Base Image**: `python:3.11-slim-bookworm` — the course-standard image, minimal footprint, no EOL risk
+- [x] **Base Image**: `python:3.11-slim-bookworm` standard image, minimal footprint, no EOL risk
 - [x] **Environment Variables**: `PYTHONUNBUFFERED=1`, `PYTHONDONTWRITEBYTECODE=1`, `PIP_DISABLE_PIP_VERSION_CHECK=1`
 - [x] **Build & Run documented in README**
 - [x] **Docker Compose**: [`docker-compose.yaml`](docker-compose.yaml)
