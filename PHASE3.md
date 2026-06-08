@@ -269,9 +269,6 @@ Phase 3 implements continuous integration/continuous deployment (CI/CD) pipeline
     HuggingFace Space:
     https://huggingface.co/spaces/AnjanDatt17/cinematch-ai
 
-- [ ] **Load Testing**: Test deployment with load testing tool (locust, Apache JMeter)
-  - [ ] Establish baseline performance metrics
-  - [ ] Document scaling characteristics
 - [x] **Monitoring Setup**: Cloud Monitoring dashboard `movierecommender-server` configured with three widgets tracking the live Cloud Run service:
   | Metric | What it shows |
   |---|---|
