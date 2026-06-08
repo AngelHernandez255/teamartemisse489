@@ -31,6 +31,31 @@ Establish a maintainable and collaborative machine learning workflow with versio
 ## Architecture Diagram
 ![Project Architecture](achitecturediagramMlops.png)
 
+## Live API
+The movie recommender is deployed on GCP Cloud Run as a live REST API:
+ 
+**Base URL:** `https://movierecommender-serve-682507623900.us-central1.run.app`
+ 
+| Endpoint | Method | Description |
+|---|---|---|
+| `/` | GET | API info |
+| `/health` | GET | Health check |
+| `/predict` | POST | Get top-N movie recommendations for a user |
+ 
+```bash
+# Health check
+curl https://movierecommender-serve-682507623900.us-central1.run.app/health
+ 
+# Get top-5 recommendations for a user
+curl -X POST \
+    https://movierecommender-serve-682507623900.us-central1.run.app/predict \
+    -H "Content-Type: application/json" \
+    -d '{"user_id": 782587125, "top_n": 5}'
+ 
+# Interactive API docs
+open https://movierecommender-serve-682507623900.us-central1.run.app/docs
+```
+ 
 ## Phase Deliverables
 
 ### Phase 1: Project Design & Model Development
