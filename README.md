@@ -57,6 +57,13 @@ open https://movierecommender-serve-682507623900.us-central1.run.app/docs
 ```
  See [Deployment.md](Deployment.md) for the full deployment guide.
 
+### Hugging Face Space
+
+In addition to the Cloud Run deployment, the project is also deployed as an interactive Hugging Face Space that allows users to explore the recommender system through a web interface.
+
+**Hugging Face Space:**  
+[CineMatch AI Demo](https://huggingface.co/spaces/AnjanDatt17/cinematch-ai)
+
 ## Phase Deliverables
 
 ### Phase 1: Project Design & Model Development
