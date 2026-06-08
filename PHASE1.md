@@ -14,39 +14,41 @@ Phase 1 establishes the foundation for your MLOps project. This phase covers pro
 - [x] **Model Considerations**: Identify initial model architectures and algorithms suitable for your problem
 - [x] **Open-Source Tools**: Document and justify the selection of open-source tools and libraries for the project
 
+This is available in the [requirements](README.txt) file at the top.
+
 ---
 
 ## 2. Code Organization & Setup
 
 - [x] **GitHub Repository**: Create repository with cookiecutter MLOps structure
-  A cookie-cutter template was used to make this very repo. Only a few changes were needed.
+  - A cookie-cutter template was used to make this very repo. Only a few changes were needed.
 - [x] **Environment Setup**: Configure Python virtual environment (venv or conda)
-done
+  -done
 - [x] **Dependency Management**: Create and maintain requirements.txt or pyproject.toml
-the [requirements](src/requirements.txt) file and [pyproject](src/pyproject.toml).
+  - the [requirements](requirements.txt) file and [pyproject](pyproject.toml).
 - [x] **Project Structure**: Organize code with clear separation of concerns (src/, tests/, data/, etc.)
-done
+  - done
 - [x] **Version Pinning**: Pin all critical dependencies to specific versions
-done
+  - done
 - [x] **Installation Documentation**: Document how to set up the development environment
-done
+  - done
 
 ---
 
 ## 3. Version Control & Collaboration
 
 - [x] **Regular Commits**: Establish commit discipline with descriptive, atomic commits
-Pull requests are used for submission. Angel Hernandez is responsible for reviewing each request and resolving conflicts.
+  - Pull requests are used for submission. Angel Hernandez is responsible for reviewing each request and resolving conflicts.
 - [x] **Branching Strategy**: Implement feature branching (e.g., git-flow or GitHub Flow)
-simple usage on a per-change basis, frequently to avoid conflicts.
+  - simple usage on a per-change basis, frequently to avoid conflicts.
 - [x] **Pull Request Process**: Establish PR template and review requirements
-Simple but effective usage of pull requests and using Discord for communication.
+  - Simple but effective usage of pull requests and using Discord for communication.
 - [x] **Team Roles**: Clearly define responsibilities (author: TeamArtemisIV, team members, reviewers)
-available in the [README](src/README.txt) file.
+  - available in the [README](src/README.txt) file.
 - [x] **Code Review Guidelines**: Document code review expectations and checklist
-all submissions are accompanied by communication on Discord. Due to our small team, it is faster to communicate through Discord rather than large commit messages.
+  - All submissions are accompanied by communication on Discord. Due to our small team, it is faster to communicate through Discord rather than large commit messages.
 - [x] **Commit History**: Maintain clean, readable git history for project traceability
-available on this repo's history.
+  - available on this repo's history.
 
 ---
 
