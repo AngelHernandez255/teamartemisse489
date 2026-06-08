@@ -10,7 +10,7 @@ Phase 2 focuses on scaling and operationalizing TeamArtemisSE489 by implementing
 ### 1.1 Dockerfile
 
 - [x] **Dockerfile Creation**: [`dockerfiles/Dockerfile`](dockerfiles/Dockerfile)
-- [x] **Base Image**: `python:3.11-slim-bookworm` — the course-standard image, minimal footprint, no EOL risk
+- [x] **Base Image**: `python:3.11-slim-bookworm` standard image, minimal footprint, no EOL risk
 - [x] **Environment Variables**: `PYTHONUNBUFFERED=1`, `PYTHONDONTWRITEBYTECODE=1`, `PIP_DISABLE_PIP_VERSION_CHECK=1`
 - [x] **Build & Run documented in README**
 - [x] **Docker Compose**: [`docker-compose.yaml`](docker-compose.yaml)
@@ -56,6 +56,8 @@ docker build -t teamartemisse489:latest .
 # or via Make:
 make docker_build
 ```
+![Docker build success](docs/screenshots/docker_build.PNG)
+![Docker image created](docs/screenshots/docker_image.PNG)
 
 **Run training (models persist on the host via volume mount):**
 
@@ -69,6 +71,7 @@ docker run -it --rm -v %cd%/models:/app/models teamartemisse489:latest
 # or via Make:
 make docker_run
 ```
+![Docker container run](docs/screenshots/docker_run.PNG)
 
 **Pass Hydra config overrides:**
 
@@ -199,6 +202,10 @@ docker run -it --rm \
 ```
 
 The `-it` flags keep stdin open so `pdb` can accept keystrokes interactively.
+
+![Monitoring or debugging bug validation](docs/screenshots/bug.PNG)
+
+![Debugging with pdb](docs/screenshots/debug.PNG)
 
 **Debug Scenario 1 — missing required columns:**
 

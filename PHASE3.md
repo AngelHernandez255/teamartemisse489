@@ -63,6 +63,10 @@ tests are available in the tests directory, the [test model](tests/test_model.py
   - Evidence still needed after opening a PR: screenshot of the
     `github-actions[bot]` CML comment showing the metrics table and plot.
 
+![GitHub Actions CML green run](docs/screenshots/cml_workflow.PNG)
+
+![GitHub CML report](docs/screenshots/cml_report.PNG)
+
 ---
 
 ## 3. Deployment on GCP
