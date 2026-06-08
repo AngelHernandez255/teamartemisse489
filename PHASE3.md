@@ -274,7 +274,7 @@ Phase 3 implements continuous integration/continuous deployment (CI/CD) pipeline
 
   http://localhost:7860
 
-  
+
   ### Deployment
 
     HuggingFace Space:
@@ -283,7 +283,7 @@ Phase 3 implements continuous integration/continuous deployment (CI/CD) pipeline
   #### Deployment Screenshot
 
   ![Hugging Face Deployment](docs/screenshots/hugging_face.png)
-  [Hugging Face Results](docs/screenshots/UI_RESULT.png)
+  ![Hugging Face Results](docs/screenshots/UI_RESULT.png)
 
 - [ ] **Load Testing**: Test deployment with load testing tool (locust, Apache JMeter)
   - [ ] Establish baseline performance metrics
