@@ -277,7 +277,7 @@ Phase 3 implements continuous integration/continuous deployment (CI/CD) pipeline
 
   ### Deployment
 
-    HuggingFace Space:
+    HuggingFace Space :
     https://huggingface.co/spaces/AnjanDatt17/cinematch-ai
   
   #### Deployment Screenshot
