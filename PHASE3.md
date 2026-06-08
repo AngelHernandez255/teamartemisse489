@@ -61,6 +61,8 @@ Phase 3 implements continuous integration/continuous deployment (CI/CD) pipeline
   - Evidence still needed after opening a PR: screenshot of the
     `github-actions[bot]` CML comment showing the metrics table and plot.
 
+![GitHub Actions CI green run](docs/screenshots/cml_workflow.PNG)
+
 ---
 
 ## 3. Deployment on GCP
