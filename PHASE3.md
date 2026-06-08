@@ -263,50 +263,52 @@ Phase 3 implements continuous integration/continuous deployment (CI/CD) pipeline
 
 ## 4. Documentation & Repository Updates
 
-- [ ] **Comprehensive README**: Update README with:
-  - [ ] Architecture diagram showing all components
-  - [ ] CI/CD pipeline overview
-  - [ ] Deployment instructions for each option (Cloud Run, Cloud Functions, HuggingFace)
-  - [ ] GCP setup and configuration guide
-  - [ ] How to invoke deployed models
-  - [ ] Monitoring and troubleshooting guide
-  - [ ] Cost estimation and optimization tips
-- [ ] **Deployment Guide**: Create detailed DEPLOYMENT.md with:
-  - [ ] Step-by-step GCP setup instructions
-  - [ ] Cloud Run deployment procedure
-  - [ ] Cloud Functions configuration
-  - [ ] Environment variables and secrets management
-  - [ ] Rollback procedures
-- [ ] **API Documentation**: Document all endpoints with:
-  - [ ] Request/response schemas
-  - [ ] Example curl/Python requests
-  - [ ] Error codes and messages
-- [ ] **Architecture Documentation**: Include diagrams showing:
-  - [ ] Data pipeline
-  - [ ] Training pipeline
-  - [ ] Inference/serving architecture
-  - [ ] CI/CD workflow
-- [ ] **Screenshots/Demos**: Add:
-  - [ ] Cloud Run dashboard screenshot
-  - [ ] Monitoring dashboard screenshot
-  - [ ] Streamlit/Gradio app screenshot
-  - [ ] API response example
-  - [ ] CML workflow output sample
-- [ ] **Troubleshooting Guide**: Document solutions for:
-  - [ ] Common deployment errors
-  - [ ] Authentication issues
-  - [ ] Performance problems
-  - [ ] Cost overruns
-- [ ] **Resource Cleanup Reminder**: Create CLEANUP.md with instructions for:
-  - [ ] Deleting GCP resources (VMs, databases, etc.)
-  - [ ] Cleaning up Cloud Storage buckets
-  - [ ] Disabling APIs to avoid charges
-  - [ ] Cost monitoring recommendations
-- [ ] **Contributing Guide Update**: Update CONTRIBUTING.md with:
-  - [ ] CI/CD requirements
-  - [ ] Testing requirements for PRs
-  - [ ] Deployment process documentation
-- [ ] **Changelog**: Maintain CHANGELOG.md documenting releases and deployments
+- [x] **Comprehensive README**: Update README with:
+  - [x] Architecture diagram showing all components
+  - [x] CI/CD pipeline overview
+  - [x] Deployment instructions for each option (Cloud Run, Cloud Functions, HuggingFace)
+  - [x] GCP setup and configuration guide
+  - [x] How to invoke deployed models
+  - [x] Monitoring and troubleshooting guide
+  - [x] Cost estimation and optimization tips
+- [x] **Deployment Guide**: Create detailed DEPLOYMENT.md with:
+  - [x] Step-by-step GCP setup instructions
+  - [x] Cloud Run deployment procedure
+  - [x] Cloud Functions configuration
+  - [x] Environment variables and secrets management
+  - [x] Rollback procedures
+- [x] **API Documentation**: Document all endpoints with:
+  - [x] Request/response schemas
+  - [x] Example curl/Python requests
+  - [x] Error codes and messages
+- [x] **Architecture Documentation**: Include diagrams showing:
+  - [x] Data pipeline
+  - [x] Training pipeline
+  - [x] Inference/serving architecture
+  - [x] CI/CD workflow
+- [x] **Screenshots/Demos**: Add:
+  - [x] Cloud Run dashboard screenshot
+  - [x] Monitoring dashboard screenshot
+  - [x] Streamlit/Gradio app screenshot
+  - [x] API response example
+  - [x] CML workflow output sample
+- [x] **Troubleshooting Guide**: Document solutions for:
+  - [x] Common deployment errors
+  - [x] Authentication issues
+  - [x] Performance problems
+  - [x] Cost overruns
+- [x] **Resource Cleanup Reminder**: Create CLEANUP.md with instructions for:
+  - [x] Deleting GCP resources (VMs, databases, etc.)
+  - [x] Cleaning up Cloud Storage buckets
+  - [x] Disabling APIs to avoid charges
+  - [x] Cost monitoring recommendations
+- [x] **Contributing Guide Update**: Update CONTRIBUTING.md with:
+  - [x] CI/CD requirements
+  - [x] Testing requirements for PRs
+  - [x] Deployment process documentation
+- [x] **Changelog**: Maintain CHANGELOG.md documenting releases and deployments
+
+- All of these should be done in the README file.
 
 ---
 
