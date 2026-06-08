@@ -39,6 +39,9 @@ Establish a maintainable and collaborative machine learning workflow with versio
 ### Phase 2: Containerization & Monitoring
 - See [PHASE2.md](PHASE2.md) for detailed checklist
 
+### Phase 3: Continuous Machine Learning (CML) and Deployment
+- See [PHASE3.md](PHASE3.md) for detailed checklist
+
 #### Containerization
 This phase adds a project Docker image based on `python:3.11-slim-bookworm`. The image installs pinned Python dependencies with `uv`, installs the local `teamartemisse489` package, and runs the training entrypoint by default.
 
@@ -273,8 +276,7 @@ make help
   - built and uploaded the cookiecutter template
   - initialise the GitHub repo
   - Set up rules for the repo
-
-**Sakshi Gorkhali**
+- **Sakshi Gorkhali**
   - Built baseline recommender system notebook, and implemented collaborative filtering models.
   - Conducted hyperparameter tuning and model evaluation using RMSE, MAR, Precision and Recall metrics.
 
@@ -286,14 +288,17 @@ make help
 - **Angel Hernandez:** Set up logging with Rich and cleaning up the GitHub documentation.
 
 ### Phase 3
-**Sakshi Gorkhali:** Deployment on Google Cloud Platform
-  - Set up the full GCP infrastructure including Artifact Registry, Cloud Build triggers, Vertex AI and DVC remote storage on GCS, for automated training and deployment
+- **Sakshi Gorkhali:** Deployment on Google Cloud Platform
+  - Set up the full GCP infrastructure, including Artifact Registry, Cloud Build triggers, Vertex AI and DVC remote storage on GCS, for automated training and deployment
   - Ran SVD model training as a Vertex AI custom job with data read directly from GCS — model artifact saved back to GCS on completion
   - Built and deployed a FastAPI movie recommender API to GCP Cloud Run.
 
 **Joshua Nevin Chandrasekar:** 
   - Added automated Docker image builds and Continuous Machine Learning. The Docker workflow builds the existing project image on pull requests and publishes tagged images to Docker Hub on pushes to main. The CML workflow runs model evaluation on GitHub Actions and posts a PR comment with metrics and a generated plot.
 
+- **Angel Hernandez:** Worked on testing, repo management, and GitHub actions.
+  - We already had some tests, so I made sure they were fine.
+  - Fixed an issue with GitHub Actions.
   
 ## References
 

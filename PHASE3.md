@@ -82,7 +82,7 @@ Phase 3 implements continuous integration/continuous deployment (CI/CD) pipeline
   - [x] **Cloud Run** — Default Compute service account (`682507623900-compute@developer.gserviceaccount.com`) used by the Cloud Run to download model and data from GCS at startup.
   - [ ] Cloud Functions — not used
   - [x] Compute Engine — `--scopes=cloud-platform` used when VM was created
-- [x] **Artifact Registry**:  Docker repository `mlops489-docker` stores both the training image and th serving image. Cloud Build pushes new versions automatically on every push to `main` via the `mlops-trigger` trigger. The full build spec lives in `cloudbuild.yaml` at the repo root.
+- [x] **Artifact Registry**:  Docker repository `mlops489-docker` stores both the training image and th serving image. Cloud Build pushes new versions automatically on every push to `main` via the `mlops-trigger` trigger. The full build spec lives in [cloudbuild.yaml](cloudbuild.yaml) at the repo root.
   - [x] **Create repository in Artifact Registry**: `mlops489-docker` repository created at `us-central1-docker.pkg.dev/mlops-recommenderproject/mlops489-docker`
   - [x] **Configure authentication from CI/CD**: Cloud Build authenticates to Artifact Registry automatically via the attached service account; local Docker auth configured with `gcloud auth configure-docker us-central1-docker.pkg.dev`
   - [x] **Push Docker images to registry**: Image
@@ -92,8 +92,8 @@ Phase 3 implements continuous integration/continuous deployment (CI/CD) pipeline
   ![Cloud Build History — trigger and manual builds](docs/screenshots/cloud-build-history.png)
 - [x] **Vertex AI Training (Option A)**: The SVD model was trained as a Vertex AI custom job. Vertex AI automates the full VM lifecycle — it provisions the worker, runs the container, captures logs, and shuts down automatically. The container reads training data directly from GCS via the automatic `/gcs` mount and writes the trained model back to GCS — no data is baked into
   the image.
-  - [x] **Create training container image**: `dockerfiles/Dockerfile` builds a `python:3.11-slim-bookworm` image with all dependencies from `requirements.txt`, source code from `src/`, and Hydra configs from `configs/`.
-  - [x] **Configure training job specification**: `config_cpu.yaml` specifies `n1-standard-4` (4 vCPUs / 15 GB RAM), 1 replica, and passes GCS paths as Hydra overrides via `containerSpec.args`:
+  - [x] **Create training container image**: [dockerfiles/Dockerfile] (dockerfiles/Dockerfile) builds a `python:3.11-slim-bookworm` image with all dependencies from `requirements.txt`, source code from `src/`, and Hydra configs from `configs/`.
+  - [x] **Configure training job specification**: [config_cpu.yaml] (config_cpu.yaml) specifies `n1-standard-4` (4 vCPUs / 15 GB RAM), 1 replica, and passes GCS paths as Hydra overrides via `containerSpec.args`:
   - [x] **Document how to submit training jobs**:
     ```bash
     # Submit
@@ -133,7 +133,7 @@ Phase 3 implements continuous integration/continuous deployment (CI/CD) pipeline
     model = joblib.load("svd.joblib")
     ```
 
-- [x] **FastAPI Service**: A FastAPI application (`app/main.py`) wraps the trained SVD model and exposes three endpoints. At startup, the app downloads  the model and data files from GCS using `google-cloud-storage` — nothing is baked into the image. This keeps the serving image small (~800 MB vs ~4 GB if data were included) and makes it trivial to update the model without rebuilding the image.
+- [x] **FastAPI Service**: A FastAPI application [app/main.py](app/main.py) wraps the trained SVD model and exposes three endpoints. At startup, the app downloads  the model and data files from GCS using `google-cloud-storage` — nothing is baked into the image. This keeps the serving image small (~800 MB vs ~4 GB if data were included) and makes it trivial to update the model without rebuilding the image.
 
   - [x] Define inference endpoint(s)
     | Method | Path | Description |
@@ -233,7 +233,7 @@ Phase 3 implements continuous integration/continuous deployment (CI/CD) pipeline
  
     ![Cloud Run console — successful deployment](docs/screenshots/console-deployment.png)
   **Continuous deployment** is wired into `cloudbuild.yaml` — every push to
-  `main` rebuilds both images and redeploys the serving container automatically:
+  `main` rebuilds both images and redeploys the serving container automatically. See `DEPLOYMENT.md` for the full step-by-step guide.
 
 - [ ] **Streamlit/Gradio Deployment (Option C)**: Deploy demo app on HuggingFace Spaces
   - [ ] Create Streamlit or Gradio interface for model
@@ -243,10 +243,13 @@ Phase 3 implements continuous integration/continuous deployment (CI/CD) pipeline
 - [ ] **Load Testing**: Test deployment with load testing tool (locust, Apache JMeter)
   - [ ] Establish baseline performance metrics
   - [ ] Document scaling characteristics
-- [ ] **Monitoring Setup**: Configure Cloud Monitoring and Cloud Logging
-  - [ ] Set up log aggregation
-  - [ ] Create monitoring dashboards
-  - [ ] Set up alerts for anomalies
+- [x] **Monitoring Setup**: Cloud Monitoring dashboard `movierecommender-server` configured with three widgets tracking the live Cloud Run service:
+  | Metric | What it shows |
+  |---|---|
+  | Request Count [SUM] | Number of requests per second |
+  | Instance Count [SUM] | Active container instances (scale-to-zero visible) |
+  | User Execution Latency [p50] | Median request execution time (~60ms) |
+  ![Monitoring Dashboard](docs/screenshots/monitoring-dashboard.png)
 
 ---
 
