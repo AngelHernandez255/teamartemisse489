@@ -96,8 +96,8 @@ tests are available in the tests directory, the [test model](tests/test_model.py
   ![Cloud Build History — trigger and manual builds](docs/screenshots/cloud-build-history.png)
 - [x] **Vertex AI Training (Option A)**: The SVD model was trained as a Vertex AI custom job. Vertex AI automates the full VM lifecycle — it provisions the worker, runs the container, captures logs, and shuts down automatically. The container reads training data directly from GCS via the automatic `/gcs` mount and writes the trained model back to GCS — no data is baked into
   the image.
-  - [x] **Create training container image**: [dockerfiles/Dockerfile] (dockerfiles/Dockerfile) builds a `python:3.11-slim-bookworm` image with all dependencies from `requirements.txt`, source code from `src/`, and Hydra configs from `configs/`.
-  - [x] **Configure training job specification**: [config_cpu.yaml] (config_cpu.yaml) specifies `n1-standard-4` (4 vCPUs / 15 GB RAM), 1 replica, and passes GCS paths as Hydra overrides via `containerSpec.args`:
+  - [x] **Create training container image**: [dockerfiles/Dockerfile](dockerfiles/Dockerfile) builds a `python:3.11-slim-bookworm` image with all dependencies from `requirements.txt`, source code from `src/`, and Hydra configs from `configs/`.
+  - [x] **Configure training job specification**: [config_cpu.yaml](config_cpu.yaml) specifies `n1-standard-4` (4 vCPUs / 15 GB RAM), 1 replica, and passes GCS paths as Hydra overrides via `containerSpec.args`:
   - [x] **Document how to submit training jobs**:
     ```bash
     # Submit
@@ -173,7 +173,7 @@ tests are available in the tests directory, the [test model](tests/test_model.py
 
 - [x] **Cloud Run Deployment (Option B)**: The FastAPI serving container is deployed to Cloud Run as a fully managed, auto-scaling service. 
 
-  - [x] **Create Dockerfile optimized for Cloud Run** (`app/Dockerfile`):
+  - [x] **Create Dockerfile optimized for Cloud Run** [app/Dockerfile](app/Dockerfile):
     The serving Dockerfile is intentionally lightweight — it copies only `app/main.py` and `requirements-serve.txt`. No training code, no data, no model. Everything is downloaded from GCS at container startup.
     ```dockerfile
     FROM python:3.11-slim-bookworm
@@ -236,7 +236,7 @@ tests are available in the tests directory, the [test model](tests/test_model.py
     ```
  
     ![Cloud Run console — successful deployment](docs/screenshots/console-deployment.png)
-  **Continuous deployment** is wired into `cloudbuild.yaml` — every push to
+  **Continuous deployment** is wired into (cloudbuild.yaml)[cloudbuild.yaml] — every push to
   `main` rebuilds both images and redeploys the serving container automatically. See `DEPLOYMENT.md` for the full step-by-step guide.
 
 - [ ] **Streamlit/Gradio Deployment (Option C)**: Deploy demo app on HuggingFace Spaces
