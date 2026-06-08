@@ -1,8 +1,7 @@
 # Artemis Movie Recommender
 
 Watch the deployed app demo here:
-
-[End-to-end demo video](docs/demo/demo_video.mp4)
+[End-to-end demo video](https://youtu.be/L1RWkEE8N_w)
 
 ## Team Information
 
