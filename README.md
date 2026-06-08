@@ -287,6 +287,10 @@ make help
   - Set up the full GCP infrastructure including Artifact Registry, Cloud Build triggers, Vertex AI and DVC remote storage on GCS, for automated training and deployment
   - Ran SVD model training as a Vertex AI custom job with data read directly from GCS — model artifact saved back to GCS on completion
   - Built and deployed a FastAPI movie recommender API to GCP Cloud Run.
+
+**Joshua Nevin Chandrasekar:** 
+  - Added automated Docker image builds and Continuous Machine Learning. The Docker workflow builds the existing project image on pull requests and publishes tagged images to Docker Hub on pushes to main. The CML workflow runs model evaluation on GitHub Actions and posts a PR comment with metrics and a generated plot.
+
   
 ## References
 
