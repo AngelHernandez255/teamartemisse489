@@ -264,10 +264,26 @@ Phase 3 implements continuous integration/continuous deployment (CI/CD) pipeline
   - Dockerized deployment workflow
   - HuggingFace Spaces deployment
   
+  ### Running with Docker
+
+  Build and start the UI container:
+
+  command : docker compose up cinematch_ui
+
+  After the container starts, open:
+
+  http://localhost:7860
+
+  
   ### Deployment
 
     HuggingFace Space:
     https://huggingface.co/spaces/AnjanDatt17/cinematch-ai
+  
+  #### Deployment Screenshot
+
+  ![Hugging Face Deployment](docs/screenshots/hugging_face.png)
+  [Hugging Face Results](docs/screenshots/UI_RESULT.png)
 
 - [ ] **Load Testing**: Test deployment with load testing tool (locust, Apache JMeter)
   - [ ] Establish baseline performance metrics
