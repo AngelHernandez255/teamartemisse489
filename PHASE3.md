@@ -8,11 +8,10 @@ Phase 3 implements continuous integration/continuous deployment (CI/CD) pipeline
 ## 1. Continuous Integration & Testing
 
 - [x] **Unit Tests**: Write pytest test scripts for data processing and model components
-tests are available in the tests directory, the [test model](tests/test_model.py) file.
+  - tests are available in the tests directory, the [test model](tests/test_model.py) file.
 - [x] **Integration Tests**: Create integration tests for full training pipeline
 - [x] **Test Coverage**: Aim for >80% code coverage with pytest-cov
 - [x] **GitHub Actions - Tests**: Create workflow for running tests on every push
-  available in the 
   - [x] Trigger on: push to main/develop branches and PRs
   - [x] Test across multiple Python versions if applicable
   - [x] Report coverage metrics
@@ -20,14 +19,19 @@ tests are available in the tests directory, the [test model](tests/test_model.py
   - [x] Running ruff linter
   - [x] Type checking with mypy
   - [x] Formatting checks
+    - these are available in the workflows and configured in the [pyproject](pyproject.toml)
+    - The ruff formatter was a bit buggy at times, as it gave false errors a few times. We set it up to automatically apply changes to fix the issue.
 - [x] **GitHub Actions - Docker Build**: Create workflow for building Docker image
   - [x] Build on PR and main branch push
   - [x] Test built image
+      - These are available in the GitHub workflow files: specifically, [ci](.github/workflows/ci.yml) [cml](.github/workflows/cml.yml)
+      - We had these enabled throughout the project, but had some issues that we fixed.
 - [x] **Pre-commit Hooks**: Set up pre-commit hooks for:
   - [x] Formatting (black/ruff)
   - [x] Linting
   - [x] Type checking
   - [x] Trailing whitespace
+    - These are available in the [pre-commit file](.pre-commit-config.yaml)
 - [x] **Test Documentation**: Document how to run tests locally and in CI
 
 ---
