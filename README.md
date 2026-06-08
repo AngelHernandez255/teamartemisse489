@@ -302,7 +302,8 @@ make help
   - built and uploaded the cookiecutter template
   - initialise the GitHub repo
   - Set up rules for the repo
-- **Sakshi Gorkhali**
+    
+**Sakshi Gorkhali**
   - Built baseline recommender system notebook, and implemented collaborative filtering models.
   - Conducted hyperparameter tuning and model evaluation using RMSE, MAR, Precision and Recall metrics.
 
