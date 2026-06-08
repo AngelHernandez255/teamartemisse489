@@ -265,6 +265,9 @@ make help
 **Anjan Kumar Basavaraj Gurudatt**
 
 **Joshua Nevin Chandrasekar** 
+  - Worked on project proposal
+  - Workflow troubleshooting
+  - Worked on baseline recommender notebook
 
 **Angel Hernandez**
   - built and uploaded the cookiecutter template
