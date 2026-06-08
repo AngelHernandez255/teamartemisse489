@@ -1,5 +1,9 @@
 # Artemis Movie Recommender
 
+Watch the deployed app demo here:
+
+[End-to-end demo video](docs/demo/demo_video.mp4)
+
 ## Team Information
 
 ### TeamArtemisSE489
